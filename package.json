@@ -1,0 +1,103 @@
+{
+  "name": "deskdocs",
+  "productName": "DeskDocs",
+  "version": "0.0.0",
+  "description": "A feature-rich desktop application for DevDocs.io.",
+  "repository": "jmerle/deskdocs",
+  "author": {
+    "name": "Jasper van Merle",
+    "email": "jaspervmerle@gmail.com"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-webpack",
+    "start": "yarn build dev --disable-gpu",
+    "package": "yarn build && electron-builder",
+    "fix": "yarn fix:tslint && yarn fix:prettier",
+    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{ts,tsx,yml,json}'",
+    "fix:tslint": "yarn lint:tslint --fix",
+    "lint": "yarn lint:tslint && yarn lint:prettier",
+    "lint:prettier": "prettier-check --ignore-path .gitignore '**/*.{ts,tsx,yml,json}'",
+    "lint:tslint": "tslint -p tsconfig.json -c tslint.json -t stylish",
+    "release": "np",
+    "publish-snap": "del dist && yarn package --linux && snapcraft push --release=stable dist/*.snap"
+  },
+  "dependencies": {
+    "electron-better-ipc": "^0.3.0",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-store": "^4.0.0",
+    "electron-unhandled": "^2.2.0",
+    "electron-util": "^0.12.1",
+    "hyperapp": "^1.2.10",
+    "hyperapp-redux-devtools": "^1.1.6",
+    "source-map-support": "^0.5.13"
+  },
+  "devDependencies": {
+    "@types/electron-devtools-installer": "^2.2.0",
+    "@types/node": "^12.7.1",
+    "del-cli": "^2.0.0",
+    "electron": "^6.0.1",
+    "electron-builder": "^21.2.0",
+    "electron-webpack": "^2.7.4",
+    "electron-webpack-ts": "^3.2.0",
+    "husky": "^3.0.2",
+    "lint-staged": "^9.2.1",
+    "np": "^5.0.3",
+    "prettier": "^1.18.2",
+    "prettier-check": "^2.0.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.1"
+  },
+  "electronWebpack": {
+    "title": "DeskDocs"
+  },
+  "np": {
+    "publish": false,
+    "releaseDraft": false
+  },
+  "build": {
+    "appId": "com.jaspervanmerle.deskdocs",
+    "artifactName": "${name}-${version}.${ext}",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "darkModeSupport": true
+    },
+    "win": {
+      "verifyUpdateCodeSignature": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "snap"
+      ],
+      "synopsis": "Feature-rich desktop application for DevDocs.io",
+      "category": "Development"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "yarn lint:tslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{tsx,yml,json}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}

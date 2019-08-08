@@ -1,0 +1,16 @@
+matrix:
+  include:
+    - os: linux
+      if: tag IS NOT present
+    - os: osx
+      osx_image: xcode10.2
+      if: fork = false AND tag IS present
+
+language: node_js
+node_js: '12'
+
+cache: yarn
+
+script:
+  - yarn lint
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then yarn package --macos --linux --windows; fi
