@@ -23,6 +23,8 @@ DeskDocs is a feature-rich desktop application for [DevDocs.io](https://devdocs.
 ### macOS
 [**Download**](https://github.com/jmerle/deskdocs/releases/latest) the `.dmg` file.
 
+*The application is unsigned. The first time you run the application you'll need to manually go to the `/Applications` folder, right click on DeskDocs and click "Open". This pops up an alert asking you whether you want to run the application, which you need to confirm.*
+
 ### Linux
 [**Download**](https://github.com/jmerle/deskdocs/releases/latest) the `.AppImage` or `.deb` file.
 
@@ -32,6 +34,8 @@ Also available as a [snap](https://snapcraft.io/deskdocs).
 
 ### Windows
 [**Download**](https://github.com/jmerle/deskdocs/releases/latest) the `.exe` file.
+
+*The application is unsigned. If the SmartScreen pops up, click on "More Info" and click on the "Run Anyways" button.*
 
 ## Features
 
