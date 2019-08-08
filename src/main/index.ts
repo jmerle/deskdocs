@@ -1,10 +1,9 @@
-import { app, BrowserWindow, Menu } from 'electron';
-import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer';
+import { app, Menu } from 'electron';
 import * as unhandled from 'electron-unhandled';
-import { debugInfo, is, openNewGitHubIssue } from 'electron-util';
-import * as path from 'path';
-import * as url from 'url';
+import { debugInfo, openNewGitHubIssue } from 'electron-util';
+import { WindowType } from '../common/WindowType';
 import { menu } from './menu';
+import { createWindow, windows } from './windows';
 
 declare global {
   // https://webpack.electron.build/using-static-assets
@@ -15,8 +14,6 @@ declare global {
 // Disabling security warnings because otherwise there are always three annoying warnings in development
 // It's unfortunately not possible to selectively disable warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'false';
-
-let mainWindow: BrowserWindow | null = null;
 
 unhandled({
   reportButton: error => {
@@ -30,53 +27,23 @@ unhandled({
 
 app.setAppUserModelId('com.jaspervanmerle.deskdocs');
 
-async function createMainWindow(): Promise<BrowserWindow> {
-  const window = new BrowserWindow({
-    icon: path.join(__static, 'icon.png'),
-    show: false,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-
-  window.on('closed', () => {
-    mainWindow = null;
-  });
-
-  window.maximize();
-
-  if (is.development) {
-    window.webContents.openDevTools({
-      mode: 'bottom',
-    });
-  }
-
-  if (is.development) {
-    await window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
-  } else {
-    await window.loadURL(
-      url.format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file',
-        slashes: true,
-      }),
-    );
-  }
-
-  return window;
-}
-
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 }
 
 app.on('second-instance', () => {
-  if (mainWindow !== null) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore();
-    }
+  const types = [WindowType.Main, WindowType.Preferences];
 
-    mainWindow.show();
+  for (const type of types) {
+    if (windows.has(type)) {
+      const window = windows.get(type);
+
+      if (window.isMinimized()) {
+        window.restore();
+      }
+
+      window.show();
+    }
   }
 });
 
@@ -87,21 +54,13 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', async () => {
-  if (mainWindow === null) {
-    mainWindow = await createMainWindow();
+  if (!windows.has(WindowType.Main)) {
+    await createWindow(WindowType.Main);
   }
 });
 
 (async () => {
   await app.whenReady();
   Menu.setApplicationMenu(menu);
-  mainWindow = await createMainWindow();
-
-  if (is.development) {
-    try {
-      await installExtension(REDUX_DEVTOOLS);
-    } catch (err) {
-      // Silently fail
-    }
-  }
+  await createWindow(WindowType.Main);
 })();

@@ -12,6 +12,6 @@ export function answerRenderer(
 ): ReturnType<MainProcessIpc['answerRenderer']> {
   return ipcMain.answerRenderer(channel, (data, browserWindow) => {
     const value = callback(data, browserWindow);
-    return value !== undefined ? value : null;
+    return typeof value !== 'undefined' ? value : null;
   });
 }

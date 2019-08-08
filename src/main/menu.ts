@@ -1,13 +1,11 @@
 import { app, Menu, MenuItemConstructorOptions, shell } from 'electron';
 import { appMenu, debugInfo, is, openNewGitHubIssue, openUrlMenuItem } from 'electron-util';
-import { config } from '../common/config';
+import { WindowType } from '../common/WindowType';
+import { config } from '../renderer/common/config';
+import { createWindow } from './windows';
 
 type MenuTemplate = Parameters<typeof Menu.buildFromTemplate>[0];
 type SubmenuTemplate = MenuItemConstructorOptions['submenu'];
-
-function showPreferences(): void {
-  console.log('Opening preferences...');
-}
 
 const helpSubmenu: SubmenuTemplate = [
   openUrlMenuItem({
@@ -66,20 +64,17 @@ const debugSubmenu: SubmenuTemplate = [
   },
 ];
 
+const preferencesMenuItem: MenuItemConstructorOptions = {
+  label: 'Preferences',
+  click: async () => {
+    await createWindow(WindowType.Preferences);
+  },
+};
+
 const genericTemplate: MenuTemplate = [
   {
     role: 'fileMenu',
-    submenu: [
-      {
-        label: 'Settings',
-        accelerator: 'Control+,',
-        click: () => {
-          showPreferences();
-        },
-      },
-      { type: 'separator' },
-      { role: 'quit' },
-    ],
+    submenu: [preferencesMenuItem, { type: 'separator' }, { role: 'quit' }],
   },
   { role: 'editMenu' },
   { role: 'viewMenu' },
@@ -90,13 +85,7 @@ const genericTemplate: MenuTemplate = [
 ];
 
 const darwinTemplate: MenuTemplate = [
-  appMenu([
-    {
-      label: 'Preferences…',
-      accelerator: 'Command+,',
-      click: () => showPreferences(),
-    },
-  ]),
+  appMenu([preferencesMenuItem]),
   { role: 'fileMenu' },
   { role: 'editMenu' },
   { role: 'viewMenu' },

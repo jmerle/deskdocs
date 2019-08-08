@@ -35,7 +35,7 @@ Also available as a [snap](https://snapcraft.io/deskdocs).
 ### Windows
 [**Download**](https://github.com/jmerle/deskdocs/releases/latest) the `.exe` file.
 
-*The application is unsigned. If the SmartScreen pops up, click on "More Info" and click on the "Run Anyways" button.*
+*The application is unsigned. If SmartScreen pops up, click on "More Info" and click on the "Run Anyways" button.*
 
 ## Features
 
@@ -78,8 +78,6 @@ $ yarn lint
 # Auto-fix linting issues
 $ yarn fix
 ```
-
-DeskDocs intentionally uses [Hyperapp 1](https://github.com/jorgebucaran/hyperapp/tree/V1) as frontend framework. An upgrade to version 2 will not be considered because it removes several key features that make Hyperapp 1 so great.
 
 ### Releases
 Running `yarn release` starts an interactive UI to publish a new version. After the command finishes and a browser window opens to create a new draft, save it immediately to allow the Travis build to attach assets to it. After the Travis build is finished the draft can be released. `snapcraft` is required to be installed and configured so that a new Snap can be pushed to the Snap Store.

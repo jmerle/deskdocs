@@ -8,6 +8,6 @@ export function answerMain(
 ): ReturnType<RendererProcessIpc['answerMain']> {
   return ipcRenderer.answerMain(channel, data => {
     const value = callback(data);
-    return value !== undefined ? value : null;
+    return typeof value !== 'undefined' ? value : null;
   });
 }

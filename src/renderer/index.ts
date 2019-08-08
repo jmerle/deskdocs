@@ -1,17 +1,17 @@
-import { is } from 'electron-util';
-import { app, View } from 'hyperapp';
-import devtools from 'hyperapp-redux-devtools';
-import { Actions, actions } from './app/actions';
-import { getInitialState } from './app/state';
-import { view } from './app/view';
-import { answerMain } from './utils/ipc';
+import { WindowType } from '../common/WindowType';
+import { setTitle } from './common/dom';
+import { answerMain } from './common/ipc';
+import { initMain } from './main';
+import { initPreferences } from './preferences';
 
-const initialState = getInitialState();
-const container = document.querySelector('#app');
+const container: HTMLDivElement = document.querySelector('#app');
 
-const appParams: Parameters<typeof app> = [initialState, actions, view as View<unknown, unknown>, container];
-const main: Actions = is.development ? devtools(app)(...appParams) : app(...appParams);
+answerMain('type', (type: WindowType) => {
+  setTitle(type.toString());
 
-answerMain('setUpdateStatus', (status: string) => {
-  main.updates.updateStatus(status);
+  if (type === WindowType.Main) {
+    initMain(container);
+  } else {
+    initPreferences(container);
+  }
 });

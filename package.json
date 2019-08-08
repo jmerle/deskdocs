@@ -26,16 +26,12 @@
   },
   "dependencies": {
     "electron-better-ipc": "^0.3.0",
-    "electron-devtools-installer": "^2.2.4",
     "electron-store": "^4.0.0",
     "electron-unhandled": "^2.2.0",
     "electron-util": "^0.12.1",
-    "hyperapp": "^1.2.10",
-    "hyperapp-redux-devtools": "^1.1.6",
     "source-map-support": "^0.5.13"
   },
   "devDependencies": {
-    "@types/electron-devtools-installer": "^2.2.0",
     "@types/node": "^12.7.1",
     "del-cli": "^2.0.0",
     "electron": "^6.0.1",
