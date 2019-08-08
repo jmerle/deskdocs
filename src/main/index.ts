@@ -3,7 +3,7 @@ import * as unhandled from 'electron-unhandled';
 import { debugInfo, openNewGitHubIssue } from 'electron-util';
 import { WindowType } from '../common/WindowType';
 import { menu } from './menu';
-import { createWindow, windows } from './windows';
+import { createWindow, restoreWindow, windows } from './windows';
 
 declare global {
   // https://webpack.electron.build/using-static-assets
@@ -36,13 +36,7 @@ app.on('second-instance', () => {
 
   for (const type of types) {
     if (windows.has(type)) {
-      const window = windows.get(type);
-
-      if (window.isMinimized()) {
-        window.restore();
-      }
-
-      window.show();
+      restoreWindow(windows.get(type));
     }
   }
 });

@@ -7,15 +7,17 @@ import { callRenderer } from './ipc';
 
 export const windows: Map<WindowType, BrowserWindow> = new Map();
 
+export function restoreWindow(window: BrowserWindow): void {
+  if (window.isMinimized()) {
+    window.restore();
+  }
+
+  window.show();
+}
+
 export async function createWindow(type: WindowType): Promise<void> {
   if (windows.has(type)) {
-    const win = windows.get(type);
-
-    if (win.isMinimized()) {
-      win.restore();
-    }
-
-    win.show();
+    restoreWindow(windows.get(type));
     return;
   }
 
