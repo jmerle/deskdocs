@@ -16,19 +16,21 @@
     "start": "yarn build dev --disable-gpu",
     "package": "yarn build && electron-builder",
     "fix": "yarn fix:tslint && yarn fix:prettier",
-    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{ts,tsx,yml,json}'",
+    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{ts,scss,yml,json}'",
     "fix:tslint": "yarn lint:tslint --fix",
     "lint": "yarn lint:tslint && yarn lint:prettier",
-    "lint:prettier": "prettier-check --ignore-path .gitignore '**/*.{ts,tsx,yml,json}'",
+    "lint:prettier": "prettier-check --ignore-path .gitignore '**/*.{ts,scss,yml,json}'",
     "lint:tslint": "tslint -p tsconfig.json -c tslint.json -t stylish",
     "release": "np",
     "publish-snap": "del dist && yarn package --linux && snapcraft push --release=stable dist/*.snap"
   },
   "dependencies": {
+    "chrome-tabs": "^5.4.0",
     "electron-better-ipc": "^0.3.0",
     "electron-store": "^4.0.0",
     "electron-unhandled": "^2.2.0",
     "electron-util": "^0.12.1",
+    "eventemitter3": "^4.0.0",
     "source-map-support": "^0.5.13"
   },
   "devDependencies": {
@@ -40,9 +42,11 @@
     "electron-webpack-ts": "^3.2.0",
     "husky": "^3.0.2",
     "lint-staged": "^9.2.1",
+    "node-sass": "^4.12.0",
     "np": "^5.0.3",
     "prettier": "^1.18.2",
     "prettier-check": "^2.0.0",
+    "sass-loader": "^7.1.0",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3",
@@ -86,7 +90,7 @@
       "prettier --write",
       "git add"
     ],
-    "*.{tsx,yml,json}": [
+    "*.{scss,yml,json}": [
       "prettier --write",
       "git add"
     ]

@@ -1,0 +1,13 @@
+@import '~chrome-tabs/css/chrome-tabs.css';
+
+@import 'base/variables';
+@import 'base/variables-light';
+@import 'base/variables-dark';
+
+@import 'base/base';
+
+@import 'windows/main';
+@import 'windows/preferences';
+
+@import 'components/tabs';
+@import 'components/webview';

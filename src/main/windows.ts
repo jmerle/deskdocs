@@ -33,6 +33,8 @@ export async function createWindow(type: WindowType): Promise<void> {
     options.resizable = false;
     options.width = 400;
     options.height = 400;
+  } else {
+    options.webPreferences.webviewTag = true;
   }
 
   const window = new BrowserWindow(options);
@@ -54,6 +56,10 @@ export async function createWindow(type: WindowType): Promise<void> {
     });
   }
 
+  window.webContents.on('dom-ready', async () => {
+    await callRenderer(window, 'type', type);
+  });
+
   window.on('closed', () => {
     windows.delete(type);
 
@@ -73,6 +79,4 @@ export async function createWindow(type: WindowType): Promise<void> {
       }),
     );
   }
-
-  await callRenderer(window, 'type', type);
 }

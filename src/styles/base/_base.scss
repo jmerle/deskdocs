@@ -1,0 +1,17 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  font-family: var(--baseFont);
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}
