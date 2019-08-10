@@ -1,6 +1,5 @@
 import { app, Menu } from 'electron';
-import * as unhandled from 'electron-unhandled';
-import { debugInfo, openNewGitHubIssue } from 'electron-util';
+import { initUnhandled } from '../common/unhandled';
 import { WindowType } from '../common/WindowType';
 import { menu } from './menu';
 import { createWindow, restoreWindow, windows } from './windows';
@@ -15,17 +14,10 @@ declare global {
 // It's unfortunately not possible to selectively disable warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'false';
 
-unhandled({
-  reportButton: error => {
-    openNewGitHubIssue({
-      user: 'jmerle',
-      repo: 'deskdocs',
-      body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`,
-    });
-  },
-});
-
+// Has to be identical to the appId in the build configuration in package.json
 app.setAppUserModelId('com.jaspervanmerle.deskdocs');
+
+initUnhandled();
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();

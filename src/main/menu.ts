@@ -1,5 +1,6 @@
 import { app, Menu, MenuItemConstructorOptions, shell } from 'electron';
 import { appMenu, debugInfo, is, openNewGitHubIssue, openUrlMenuItem } from 'electron-util';
+import { REPO_NAME, REPO_OWNER } from '../common/constants';
 import { WindowType } from '../common/WindowType';
 import { config } from '../renderer/common/config';
 import { createWindow } from './windows';
@@ -10,7 +11,7 @@ type SubmenuTemplate = MenuItemConstructorOptions['submenu'];
 const helpSubmenu: SubmenuTemplate = [
   openUrlMenuItem({
     label: 'Source code',
-    url: 'https://github.com/jmerle/deskdocs',
+    url: `https://github.com/${REPO_OWNER}/${REPO_NAME}`,
   }),
   {
     label: 'Report an issue…',
@@ -24,8 +25,8 @@ const helpSubmenu: SubmenuTemplate = [
 ${debugInfo()}`;
 
       openNewGitHubIssue({
-        user: 'jmerle',
-        repo: 'deskdocs',
+        user: REPO_OWNER,
+        repo: REPO_NAME,
         body,
       });
     },

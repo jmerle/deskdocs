@@ -27,8 +27,9 @@
   "dependencies": {
     "chrome-tabs": "^5.4.0",
     "electron-better-ipc": "^0.3.0",
+    "electron-context-menu": "https://github.com/jmerle/electron-context-menu/tarball/0d42f32edbf078ef83330dd4c36e8180923692c8",
     "electron-store": "^4.0.0",
-    "electron-unhandled": "^2.2.0",
+    "electron-unhandled": "https://github.com/jmerle/electron-unhandled/tarball/3c1fbebd696695b23e216eefb0d5fb2d47fa74fa",
     "electron-util": "^0.12.1",
     "eventemitter3": "^4.0.0",
     "source-map-support": "^0.5.13"

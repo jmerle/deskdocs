@@ -1,4 +1,4 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindow, BrowserWindowConstructorOptions, globalShortcut } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
@@ -48,6 +48,21 @@ export async function createWindow(type: WindowType): Promise<void> {
         mode: 'bottom',
       });
     }
+
+    window.on('focus', () => {
+      globalShortcut.register('CommandOrControl+T', async () => {
+        await callRenderer(window, 'addTab');
+      });
+
+      globalShortcut.register('CommandOrControl+W', async () => {
+        await callRenderer(window, 'closeCurrentTab');
+      });
+    });
+
+    window.on('blur', () => {
+      globalShortcut.unregister('CommandOrControl+T');
+      globalShortcut.unregister('CommandOrControl+W');
+    });
   } else {
     window.setMenuBarVisibility(false);
 

@@ -1,8 +1,10 @@
+import { answerMain } from '../common/ipc';
+import { initWindowContextMenu } from './context-menu';
 import { TabManager } from './tabs/TabManager';
 
 export function initMain(container: HTMLElement): void {
   container.innerHTML = `
-    <div id="tabs" class="chrome-tabs">
+    <div id="tabs" class="chrome-tabs hidden">
       <div class="chrome-tabs-content"></div>
     </div>
     <div id="webviews"></div>
@@ -14,7 +16,15 @@ export function initMain(container: HTMLElement): void {
   const manager = new TabManager(tabsContainer, webviewsContainer);
 
   manager.init();
+  initWindowContextMenu(manager);
+
   manager.addTab();
-  manager.addTab();
-  manager.addTab();
+
+  answerMain('addTab', () => {
+    manager.addTab();
+  });
+
+  answerMain('closeCurrentTab', () => {
+    manager.closeCurrentTab();
+  });
 }
