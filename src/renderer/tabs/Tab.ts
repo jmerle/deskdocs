@@ -11,7 +11,10 @@ export class Tab extends EventEmitter<TabEvents> {
     super();
 
     this.initEvents();
-    initWebviewContextMenu(webview);
+
+    this.webview.addEventListener('dom-ready', () => {
+      initWebviewContextMenu(webview);
+    });
   }
 
   private initEvents(): void {

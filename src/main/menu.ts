@@ -1,9 +1,7 @@
 import { app, Menu, MenuItemConstructorOptions, shell } from 'electron';
 import { appMenu, debugInfo, is, openNewGitHubIssue, openUrlMenuItem } from 'electron-util';
+import { config } from '../common/config';
 import { REPO_NAME, REPO_OWNER } from '../common/constants';
-import { WindowType } from '../common/WindowType';
-import { config } from '../renderer/common/config';
-import { createWindow } from './windows';
 
 type MenuTemplate = Parameters<typeof Menu.buildFromTemplate>[0];
 type SubmenuTemplate = MenuItemConstructorOptions['submenu'];
@@ -67,8 +65,10 @@ const debugSubmenu: SubmenuTemplate = [
 
 const preferencesMenuItem: MenuItemConstructorOptions = {
   label: 'Preferences',
+  accelerator: 'CommandOrControl+,',
+  registerAccelerator: false,
   click: async () => {
-    await createWindow(WindowType.Preferences);
+    // TODO
   },
 };
 

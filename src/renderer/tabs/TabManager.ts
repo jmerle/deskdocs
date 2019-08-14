@@ -1,6 +1,6 @@
 import { WebviewTag } from 'electron';
 import { api } from 'electron-util';
-import { DEFAULT_URL } from '../../../common/constants';
+import { DEFAULT_URL } from '../../common/constants';
 import { ImprovedChromeTabs } from './ImprovedChromeTabs';
 import { Tab } from './Tab';
 
@@ -85,6 +85,14 @@ export class TabManager {
   public closeTabsToRight(tab: Tab): void {
     const tabsToClose = this.tabs.filter(t => t.index > tab.index);
     tabsToClose.forEach(t => this.closeTab(t));
+  }
+
+  public showTabAtIndex(index: number): void {
+    if (index >= this.tabs.length) {
+      return;
+    }
+
+    this.showTab(this.tabs[index]);
   }
 
   private showTab(tab: Tab): void {

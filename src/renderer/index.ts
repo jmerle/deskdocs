@@ -1,26 +1,43 @@
+import { config } from '../common/config';
+import { answerMain } from '../common/ipc';
 import { initUnhandled } from '../common/unhandled';
-import { WindowType } from '../common/WindowType';
-import { setTitle } from './common/dom';
-import { answerMain } from './common/ipc';
-import { initMain } from './main';
-import { initPreferences } from './preferences';
+import { initWindowContextMenu } from './context-menu';
+import { TabManager } from './tabs/TabManager';
+import { initTheme } from './theme';
 
 import '../styles/index.scss';
 
 initUnhandled();
+config.initRenderer();
+initTheme();
 
-answerMain('type', (type: WindowType) => {
-  const container: HTMLElement = document.querySelector('#app');
+const container: HTMLElement = document.querySelector('#app');
 
-  setTitle(type.toString());
+container.innerHTML = `
+    <div id="tabs" class="chrome-tabs hidden">
+      <div class="chrome-tabs-content"></div>
+    </div>
+    <div id="webviews"></div>
+  `;
 
-  const bodyClasses = document.body.classList;
-  bodyClasses.add('theme-default');
-  bodyClasses.add(`window-${type === WindowType.Main ? 'main' : 'preferences'}`);
+const tabsContainer: HTMLElement = container.querySelector('#tabs');
+const webviewsContainer: HTMLElement = container.querySelector('#webviews');
 
-  if (type === WindowType.Main) {
-    initMain(container);
-  } else {
-    initPreferences(container);
-  }
+const manager = new TabManager(tabsContainer, webviewsContainer);
+
+manager.init();
+initWindowContextMenu(manager);
+
+manager.addTab();
+
+answerMain('addTab', () => {
+  manager.addTab();
+});
+
+answerMain('closeCurrentTab', () => {
+  manager.closeCurrentTab();
+});
+
+answerMain('showTab', ({ index }) => {
+  manager.showTabAtIndex(index);
 });

@@ -9,9 +9,15 @@ body {
   padding: 0;
 
   font-family: var(--baseFont);
+
+  color: var(--textColor);
+  background: var(--bodyBackground);
 }
 
 #app {
   width: 100vw;
   height: 100vh;
+
+  display: flex;
+  flex-direction: column;
 }

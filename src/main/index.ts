@@ -1,8 +1,8 @@
 import { app, Menu } from 'electron';
+import { config } from '../common/config';
 import { initUnhandled } from '../common/unhandled';
-import { WindowType } from '../common/WindowType';
 import { menu } from './menu';
-import { createWindow, restoreWindow, windows } from './windows';
+import { createOrRestoreWindow } from './window';
 
 declare global {
   // https://webpack.electron.build/using-static-assets
@@ -23,14 +23,10 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 }
 
-app.on('second-instance', () => {
-  const types = [WindowType.Main, WindowType.Preferences];
+config.initMain();
 
-  for (const type of types) {
-    if (windows.has(type)) {
-      restoreWindow(windows.get(type));
-    }
-  }
+app.on('second-instance', async () => {
+  await createOrRestoreWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -40,13 +36,11 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', async () => {
-  if (!windows.has(WindowType.Main)) {
-    await createWindow(WindowType.Main);
-  }
+  await createOrRestoreWindow();
 });
 
 (async () => {
   await app.whenReady();
   Menu.setApplicationMenu(menu);
-  await createWindow(WindowType.Main);
+  await createOrRestoreWindow();
 })();
