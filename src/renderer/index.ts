@@ -5,7 +5,7 @@ import { initWindowContextMenu } from './context-menu';
 import { TabManager } from './tabs/TabManager';
 import { initTheme } from './theme';
 
-import '../styles/index.scss';
+import './styles/index.scss';
 
 initUnhandled();
 config.initRenderer();

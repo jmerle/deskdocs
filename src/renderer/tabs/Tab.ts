@@ -14,6 +14,10 @@ export class Tab extends EventEmitter<TabEvents> {
 
     this.webview.addEventListener('dom-ready', () => {
       initWebviewContextMenu(webview);
+
+      if (this.index === 0) {
+        this.webview.openDevTools();
+      }
     });
   }
 

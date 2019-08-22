@@ -66,7 +66,7 @@ TBD
 ## Development
 DeskDocs is built with Electron and TypeScript. Yarn is used for dependency management. After installing the dependencies with `yarn`, the following commands can be useful:
 ```sh
-# Start the application with hot-reloading enabled
+# Start the application with hot-reloading enabled on the main process
 $ yarn start
 
 # Package the application for the current platform

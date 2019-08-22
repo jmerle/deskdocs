@@ -13,20 +13,20 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "build": "electron-webpack",
-    "start": "yarn build dev --disable-gpu",
+    "start": "yarn build dev",
     "package": "yarn build && electron-builder",
     "lint": "yarn lint:tslint && yarn lint:prettier",
-    "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{ts,scss,yml,json}'",
+    "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{js,ts,scss,yml,json}'",
     "lint:tslint": "tslint -p tsconfig.json -c tslint.json -t stylish",
     "fix": "yarn fix:tslint && yarn fix:prettier",
-    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{ts,scss,yml,json}'",
+    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.{js,ts,scss,yml,json}'",
     "fix:tslint": "yarn lint:tslint --fix",
     "release": "np",
     "publish-snap": "del dist && yarn package --linux && snapcraft push --release=stable dist/*.snap"
   },
   "dependencies": {
     "chrome-tabs": "^5.4.0",
-    "electron-better-ipc": "^0.3.0",
+    "electron-better-ipc": "^0.4.0",
     "electron-context-menu": "https://github.com/jmerle/electron-context-menu/tarball/0d42f32edbf078ef83330dd4c36e8180923692c8",
     "electron-store": "^4.0.0",
     "electron-unhandled": "^3.0.0",
@@ -35,14 +35,14 @@
     "source-map-support": "^0.5.13"
   },
   "devDependencies": {
-    "@types/node": "^12.7.1",
+    "@types/node": "^12.7.2",
     "del-cli": "^2.0.0",
     "electron": "^6.0.1",
     "electron-builder": "^21.2.0",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
-    "husky": "^3.0.2",
-    "lint-staged": "^9.2.1",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.3",
     "node-sass": "^4.12.0",
     "np": "^5.0.3",
     "prettier": "^1.18.2",
@@ -53,7 +53,10 @@
     "webpack": "^4.39.1"
   },
   "electronWebpack": {
-    "title": "DeskDocs"
+    "title": "DeskDocs",
+    "renderer": {
+      "webpackConfig": "webpack.renderer.transformer.js"
+    }
   },
   "np": {
     "publish": false,

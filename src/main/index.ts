@@ -1,4 +1,5 @@
 import { app, Menu } from 'electron';
+import { is } from 'electron-util';
 import { config } from '../common/config';
 import { initUnhandled } from '../common/unhandled';
 import { menu } from './menu';
@@ -18,6 +19,10 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'false';
 app.setAppUserModelId('com.jaspervanmerle.deskdocs');
 
 initUnhandled();
+
+if (is.linux) {
+  app.disableHardwareAcceleration();
+}
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();

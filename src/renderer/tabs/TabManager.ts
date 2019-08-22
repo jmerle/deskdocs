@@ -1,5 +1,6 @@
 import { WebviewTag } from 'electron';
-import { api } from 'electron-util';
+import { api, is } from 'electron-util';
+import * as path from 'path';
 import { DEFAULT_URL } from '../../common/constants';
 import { ImprovedChromeTabs } from './ImprovedChromeTabs';
 import { Tab } from './Tab';
@@ -130,6 +131,9 @@ export class TabManager {
   private createWebview(url: string): WebviewTag {
     const webview = document.createElement('webview');
     webview.setAttribute('src', url);
+
+    const preloadPath = is.development ? '../../../dist/renderer/webview.js' : 'webview.js';
+    webview.setAttribute('preload', `file://${path.resolve(__dirname, preloadPath)}`);
 
     this.webviewsContainer.appendChild(webview);
 
