@@ -1,4 +1,4 @@
-import { app, Menu } from 'electron';
+import { app, Menu, session } from 'electron';
 import { is } from 'electron-util';
 import { config } from '../common/config';
 import { initUnhandled } from '../common/unhandled';
@@ -46,6 +46,18 @@ app.on('activate', async () => {
 
 (async () => {
   await app.whenReady();
+
+  session.defaultSession.webRequest.onHeadersReceived((details: any, callback) => {
+    if (details.url.startsWith('https://devdocs.io/')) {
+      delete details.responseHeaders['content-security-policy'];
+    }
+
+    callback({
+      cancel: false,
+      responseHeaders: details.responseHeaders,
+    });
+  });
+
   Menu.setApplicationMenu(menu);
   await createOrRestoreWindow();
 })();

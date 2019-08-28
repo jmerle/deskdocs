@@ -15,8 +15,6 @@ function onNavigate(currentPathname: string): void {
       currentHandlers.delete(pathname);
     }
   }
-
-  console.log([...currentHandlers]);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
