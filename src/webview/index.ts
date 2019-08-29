@@ -1,6 +1,10 @@
 import { pageHandlers } from './pages';
 import { PageHandler } from './pages/PageHandler';
 
+declare global {
+  const app: any;
+}
+
 const currentHandlers: Map<string, PageHandler> = new Map();
 
 function onNavigate(currentPathname: string): void {
@@ -18,13 +22,17 @@ function onNavigate(currentPathname: string): void {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const originalPushState = history.pushState;
+  const interval = setInterval(() => {
+    if (app !== undefined && app.router !== undefined) {
+      clearInterval(interval);
 
-  history.pushState = function(): any {
-    const result = originalPushState.apply(this, arguments as any);
-    onNavigate(arguments[0].path);
-    return result;
-  };
+      if (app.router.context !== undefined) {
+        onNavigate(window.location.pathname);
+      }
 
-  onNavigate(window.location.pathname);
+      app.router.on('after', (type: string, details: any) => {
+        onNavigate(details.path);
+      });
+    }
+  }, 50);
 });
