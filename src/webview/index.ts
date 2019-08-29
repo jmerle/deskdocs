@@ -1,9 +1,12 @@
+import { config } from '../common/config';
 import { pageHandlers } from './pages';
 import { PageHandler } from './pages/PageHandler';
 
 declare global {
   const app: any;
 }
+
+config.initRenderer();
 
 const currentHandlers: Map<string, PageHandler> = new Map();
 
