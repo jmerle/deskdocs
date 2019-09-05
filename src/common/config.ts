@@ -3,8 +3,8 @@ import { ipcRenderer } from 'electron-better-ipc';
 import ElectronStore from 'electron-store';
 import { answerMain, answerRenderer, callMain, callRenderer } from './ipc';
 
-type OnChangeCallback<T> = (newValue: T | undefined, oldValue: T | undefined) => void;
-type OnAnyChangeCallback<T> = (
+export type OnChangeCallback<T> = (newValue: T | undefined, oldValue: T | undefined) => void;
+export type OnAnyChangeCallback<T> = (
   newValue: { [key: string]: T } | undefined,
   oldValue: { [key: string]: T } | undefined,
 ) => void;

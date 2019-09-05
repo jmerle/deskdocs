@@ -1,6 +1,5 @@
 import { config } from '../common/config';
-import { pageHandlers } from './pages';
-import { PageHandler } from './pages/PageHandler';
+import { modules } from './modules';
 
 declare global {
   const app: any;
@@ -8,19 +7,9 @@ declare global {
 
 config.initWebview();
 
-const currentHandlers: Map<string, PageHandler> = new Map();
-
 function onNavigate(currentPathname: string): void {
-  for (const [pathname, ctor] of pageHandlers) {
-    if (pathname === '*' || currentPathname === pathname) {
-      if (!currentHandlers.has(pathname)) {
-        currentHandlers.set(pathname, new ctor());
-      }
-
-      currentHandlers.get(pathname).onNavigate(currentPathname);
-    } else {
-      currentHandlers.delete(pathname);
-    }
+  for (const module of modules) {
+    module.update(currentPathname);
   }
 }
 

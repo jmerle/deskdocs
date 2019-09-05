@@ -1,8 +1,12 @@
 import { config } from '../../common/config';
-import { PageHandler } from './PageHandler';
+import { Module } from './Module';
 
-export class PreferencesPageHandler extends PageHandler {
-  public onNavigate(pathname: string): void {
+export class PreferencesPage extends Module {
+  protected shouldActivate(pathname: string): boolean {
+    return pathname === '/settings';
+  }
+
+  protected onNavigate(pathname: string): void {
     this.addSettingsSection();
 
     this.addCheckbox('launchOnBoot', config.get('launchOnBoot'), 'Launch on boot');
