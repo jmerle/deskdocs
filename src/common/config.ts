@@ -1,4 +1,5 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, WebviewTag } from 'electron';
+import { ipcRenderer } from 'electron-better-ipc';
 import ElectronStore from 'electron-store';
 import { answerMain, answerRenderer, callMain, callRenderer } from './ipc';
 
@@ -16,7 +17,7 @@ class ImprovedElectronStore<T> extends ElectronStore<T> {
   private onChangeCallbacks: { [key: string]: Array<OnChangeCallback<T>> } = {};
   private onAnyChangeCallbacks: Array<OnAnyChangeCallback<T>> = [];
 
-  private readonly keys: string[] = [];
+  public readonly keys: string[] = [];
 
   constructor(options: ElectronStore.Options<T> & { defaults: ElectronStore.Options<T>['defaults'] }) {
     super(options);
@@ -40,39 +41,40 @@ class ImprovedElectronStore<T> extends ElectronStore<T> {
 
   public initRenderer(): void {
     answerMain('onChange', data => {
-      const callbacks = this.onChangeCallbacks[data.key];
+      document.querySelectorAll<WebviewTag>('webview').forEach(webview => {
+        webview.send('onChange', data);
+      });
 
-      if (callbacks === undefined) {
-        return;
-      }
-
-      for (const callback of callbacks) {
-        callback(data.newValue, data.oldValue);
-      }
+      this.handleRendererOnChange(data);
     });
 
     answerMain('onAnyChange', data => {
-      for (const callback of this.onAnyChangeCallbacks) {
-        callback(data.newValue, data.oldValue);
-      }
-    });
-
-    for (const key of this.keys) {
-      this.onDidChange(key, (newValue, oldValue) => {
-        callMain('onChange', {
-          key,
-          newValue,
-          oldValue,
-        } as any);
+      document.querySelectorAll<WebviewTag>('webview').forEach(webview => {
+        webview.send('onAnyChange', data);
       });
-    }
 
-    this.onDidAnyChange((newValue, oldValue) => {
-      callMain('onAnyChange', {
-        newValue,
-        oldValue,
-      } as any);
+      this.handleRendererOnAnyChange(data);
     });
+
+    this.setUpRendererEvents(callMain);
+  }
+
+  public initWebviewTag(webview: WebviewTag): void {
+    webview.addEventListener('ipc-message', data => {
+      callMain(data.channel, ...data.args);
+    });
+  }
+
+  public initWebview(): void {
+    ipcRenderer.on('onChange', (event, data) => {
+      this.handleRendererOnChange(data);
+    });
+
+    ipcRenderer.on('onAnyChange', (event, data) => {
+      this.handleRendererOnAnyChange(data);
+    });
+
+    this.setUpRendererEvents(ipcRenderer.sendToHost);
   }
 
   public onChange(key: string, callback: OnChangeCallback<T>): void {
@@ -86,12 +88,56 @@ class ImprovedElectronStore<T> extends ElectronStore<T> {
   public onAnyChange(callback: OnAnyChangeCallback<T>): void {
     this.onAnyChangeCallbacks.push(callback);
   }
+
+  private setUpRendererEvents(sendFunc: typeof callMain): void {
+    for (const key of this.keys) {
+      this.onDidChange(key, (newValue, oldValue) => {
+        sendFunc('onChange', {
+          key,
+          newValue,
+          oldValue,
+        } as any);
+      });
+    }
+
+    this.onDidAnyChange((newValue, oldValue) => {
+      sendFunc('onAnyChange', {
+        newValue,
+        oldValue,
+      } as any);
+    });
+  }
+
+  private handleRendererOnChange(data: any): void {
+    const callbacks = this.onChangeCallbacks[data.key];
+
+    if (callbacks === undefined) {
+      return;
+    }
+
+    for (const callback of callbacks) {
+      callback(data.newValue, data.oldValue);
+    }
+  }
+
+  private handleRendererOnAnyChange(data: any): void {
+    for (const callback of this.onAnyChangeCallbacks) {
+      callback(data.newValue, data.oldValue);
+    }
+  }
 }
 
 export const config = new ImprovedElectronStore<any>({
   defaults: {
-    darkMode: false,
+    dark: false,
+
     globalShortcut: 'CommandOrControl+Shift+D',
-    globalShortcutEnabled: false,
+    globalShortcutEnabled: true,
+
+    launchOnBoot: false,
+    startMinimized: false,
+
+    showSingleTab: false,
+    autoRestore: false,
   },
 });

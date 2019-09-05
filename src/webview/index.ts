@@ -6,7 +6,7 @@ declare global {
   const app: any;
 }
 
-config.initRenderer();
+config.initWebview();
 
 const currentHandlers: Map<string, PageHandler> = new Map();
 
