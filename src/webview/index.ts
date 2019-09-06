@@ -1,5 +1,6 @@
 import { config } from '../common/config';
-import { modules } from './modules';
+import { createModules } from './modules';
+import { Module } from './modules/Module';
 
 declare global {
   const app: any;
@@ -7,7 +8,7 @@ declare global {
 
 config.initWebview();
 
-function onNavigate(currentPathname: string): void {
+function onNavigate(modules: Module[], currentPathname: string): void {
   for (const module of modules) {
     module.update(currentPathname);
   }
@@ -18,12 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (app !== undefined && app.router !== undefined) {
       clearInterval(interval);
 
+      const modules = createModules();
+
       if (app.router.context !== undefined) {
-        onNavigate(window.location.pathname);
+        onNavigate(modules, window.location.pathname);
       }
 
       app.router.on('after', (type: string, details: any) => {
-        onNavigate(details.path);
+        onNavigate(modules, details.path);
       });
     }
   }, 50);

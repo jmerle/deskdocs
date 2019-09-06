@@ -132,6 +132,7 @@ export class TabManager {
   private createWebview(url: string): WebviewTag {
     const webview = document.createElement('webview');
     webview.setAttribute('src', url);
+    webview.setAttribute('webpreferences', 'experimentalFeatures');
 
     const preloadPath = is.development ? '../../../dist/renderer/webview.js' : 'webview.js';
     webview.setAttribute('preload', `file://${path.resolve(__dirname, preloadPath)}`);
