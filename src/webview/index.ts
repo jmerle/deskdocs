@@ -1,4 +1,4 @@
-import { config } from '../common/config';
+import { webviewConfig } from './config';
 import { createModules } from './modules';
 import { Module } from './modules/Module';
 
@@ -6,7 +6,7 @@ declare global {
   const app: any;
 }
 
-config.initWebview();
+webviewConfig.init();
 
 function onNavigate(modules: Module[], currentPathname: string): void {
   for (const module of modules) {

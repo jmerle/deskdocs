@@ -1,4 +1,5 @@
-import { config, OnAnyChangeCallback, OnChangeCallback } from '../../common/config';
+import { OnAnyChangeCallback, OnChangeCallback } from '../../common/config/config-types';
+import { webviewConfig } from '../config';
 
 export abstract class Module {
   private activated = false;
@@ -17,16 +18,16 @@ export abstract class Module {
     // Let implementations override this
   }
 
-  protected onConfigChange(key: string, cb: OnChangeCallback<any>): void {
-    config.onChange(key, (newValue, oldValue) => {
+  protected onConfigChange(key: string, cb: OnChangeCallback): void {
+    webviewConfig.onChange(key, (newValue, oldValue) => {
       if (this.activated) {
         cb(newValue, oldValue);
       }
     });
   }
 
-  protected onAnyConfigChange(cb: OnAnyChangeCallback<any>): void {
-    config.onAnyChange((newValue, oldValue) => {
+  protected onAnyConfigChange(cb: OnAnyChangeCallback): void {
+    webviewConfig.onAnyChange((newValue, oldValue) => {
       if (this.activated) {
         cb(newValue, oldValue);
       }

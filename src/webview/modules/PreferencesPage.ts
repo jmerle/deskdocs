@@ -1,53 +1,9 @@
-import { config } from '../../common/config';
+import { webviewConfig } from '../config';
+import { preferences, PreferenceType } from '../preferences';
 import { Module } from './Module';
 
-enum PreferenceType {
-  Checkbox,
-  Accelerator,
-}
-
-interface Preference {
-  id: string;
-  type: PreferenceType;
-  label: string;
-  description?: string;
-}
-
 export class PreferencesPage extends Module {
-  private readonly preferences: Preference[] = [
-    {
-      id: 'launchOnBoot',
-      type: PreferenceType.Checkbox,
-      label: 'Launch on boot',
-    },
-    {
-      id: 'startMinimized',
-      type: PreferenceType.Checkbox,
-      label: 'Launch minimized',
-      description: 'With this checked, DeskDocs will minimize itself to the tray when it is started.',
-    },
-    {
-      id: 'globalShortcutEnabled',
-      type: PreferenceType.Checkbox,
-      label: 'Enable global shortcut',
-      description:
-        'With this checked, pressing the global shortcut configured below will toggle focus on the DeskDocs window.',
-    },
-    {
-      id: 'globalShortcut',
-      type: PreferenceType.Accelerator,
-      label: 'Global shortcut',
-    },
-    {
-      id: 'showSingleTab',
-      type: PreferenceType.Checkbox,
-      label: 'Enable auto restore',
-      description:
-        'With this checked, tabs that were open when DeskDocs was last closed will be re-opened when DeskDocs is started again.',
-    },
-  ];
-
-  private syncedIds: Map<string, boolean> = new Map();
+  private syncedIds: string[] = [];
 
   protected shouldActivate(pathname: string): boolean {
     return pathname === '/settings';
@@ -72,8 +28,8 @@ export class PreferencesPage extends Module {
   }
 
   private addPreferences(): void {
-    for (const { id, type, label, description } of this.preferences) {
-      const currentValue = config.get(id);
+    for (const { id, type, label, description } of preferences) {
+      const currentValue = webviewConfig.get(id);
 
       switch (type) {
         case PreferenceType.Checkbox:
@@ -87,11 +43,11 @@ export class PreferencesPage extends Module {
   }
 
   private syncPreferences(): void {
-    document.querySelectorAll('._settings-label > input').forEach(checkbox => {
-      const id = checkbox.getAttribute('name');
+    document.querySelectorAll('._settings-label > input').forEach(input => {
+      const id = input.getAttribute('name');
 
       let type: PreferenceType = null;
-      switch (checkbox.getAttribute('type')) {
+      switch (input.getAttribute('type')) {
         case 'checkbox':
           type = PreferenceType.Checkbox;
           break;
@@ -101,19 +57,19 @@ export class PreferencesPage extends Module {
       }
 
       if (type !== null) {
-        this.syncPreference(id, type);
+        this.syncPreference(id, type, id === 'smoothScroll' ? 'fastScroll' : id);
       }
     });
   }
 
-  private syncPreference(id: string, type: PreferenceType): void {
-    if (this.syncedIds.has(id)) {
+  private syncPreference(id: string, type: PreferenceType, cookie: string = id): void {
+    if (this.syncedIds.includes(id)) {
       return;
     }
 
-    this.syncedIds.set(id, true);
+    this.syncedIds.push(id);
 
-    this.onConfigChange(id, newValue => {
+    this.onConfigChange(cookie, newValue => {
       switch (type) {
         case PreferenceType.Checkbox:
           this.updateCheckbox(id, newValue);
@@ -149,8 +105,19 @@ export class PreferencesPage extends Module {
     this.addInput(labelHtml);
   }
 
-  private updateCheckbox(id: string, newValue: boolean): void {
-    //
+  private updateCheckbox(id: string, newValue: boolean | string): void {
+    if (id === 'smoothScroll') {
+      newValue = !newValue;
+    }
+
+    if (id === 'layout') {
+      document.querySelectorAll<HTMLInputElement>('input[name="layout"]').forEach(input => {
+        input.checked = newValue !== false && (newValue as string).includes(input.getAttribute('value'));
+      });
+    } else {
+      const input = document.querySelector<HTMLInputElement>(`input[name="${id}"]`);
+      input.checked = newValue as boolean;
+    }
   }
 
   private updateAccelerator(id: string, newValue: string): void {

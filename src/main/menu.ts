@@ -1,7 +1,7 @@
 import { app, Menu, MenuItemConstructorOptions, shell } from 'electron';
 import { appMenu, debugInfo, is, openNewGitHubIssue, openUrlMenuItem } from 'electron-util';
-import { config } from '../common/config';
 import { REPO_NAME, REPO_OWNER } from '../common/constants';
+import { mainConfig } from './config';
 
 type MenuTemplate = Parameters<typeof Menu.buildFromTemplate>[0];
 
@@ -39,7 +39,7 @@ const debugSubmenu: MenuItemConstructorOptions = {
     {
       label: 'Open settings in editor',
       click: () => {
-        config.openInEditor();
+        mainConfig.openInEditor();
       },
     },
     {
@@ -54,7 +54,7 @@ const debugSubmenu: MenuItemConstructorOptions = {
     {
       label: 'Delete settings and quit',
       click: () => {
-        config.clear();
+        mainConfig.clear();
         app.quit();
       },
     },

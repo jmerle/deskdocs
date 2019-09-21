@@ -1,8 +1,8 @@
 import { WebviewTag } from 'electron';
 import { api, is } from 'electron-util';
 import * as path from 'path';
-import { config } from '../../common/config';
 import { DEFAULT_URL } from '../../common/constants';
+import { rendererConfig } from '../config';
 import { ImprovedChromeTabs } from './ImprovedChromeTabs';
 import { Tab } from './Tab';
 
@@ -137,7 +137,7 @@ export class TabManager {
     const preloadPath = is.development ? '../../../dist/renderer/webview.js' : 'webview.js';
     webview.setAttribute('preload', `file://${path.resolve(__dirname, preloadPath)}`);
 
-    config.initWebviewTag(webview);
+    rendererConfig.initWebviewTag(webview);
 
     this.webviewsContainer.appendChild(webview);
 

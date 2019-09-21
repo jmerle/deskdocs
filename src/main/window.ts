@@ -2,8 +2,8 @@ import { Accelerator, BrowserWindow, globalShortcut } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
-import { config } from '../common/config';
 import { answerRenderer, callRenderer } from '../common/ipc';
+import { mainConfig } from './config';
 
 let mainWindow: BrowserWindow = null;
 
@@ -50,7 +50,7 @@ function configureWindow(window: BrowserWindow): void {
     }
   };
 
-  let currentGlobalShortcut: Accelerator = config.get('globalShortcut') as Accelerator;
+  let currentGlobalShortcut: Accelerator = mainConfig.get('globalShortcut') as Accelerator;
   globalShortcut.register(currentGlobalShortcut, globalShortcutCallback);
 
   answerRenderer('updateGlobalShortcut', (newShortcut: Accelerator) => {

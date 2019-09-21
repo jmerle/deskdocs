@@ -1,4 +1,4 @@
-import { config } from '../../common/config';
+import { webviewConfig } from '../config';
 import { Module } from './Module';
 
 export class PreferencesSync extends Module {
@@ -6,7 +6,6 @@ export class PreferencesSync extends Module {
     super();
 
     this.initCookieWatching();
-    this.initConfigWatching();
   }
 
   protected shouldActivate(pathname: string): boolean {
@@ -19,16 +18,12 @@ export class PreferencesSync extends Module {
     store.addEventListener('change', (event: any) => {
       for (const cookie of event.changed) {
         const value = cookie.value === '1' ? true : cookie.value;
-        config.set(cookie.name, value);
+        webviewConfig.set(cookie.name, value);
       }
 
       for (const cookie of event.deleted) {
-        config.set(cookie.name, false);
+        webviewConfig.set(cookie.name, false);
       }
     });
-  }
-
-  private initConfigWatching(): void {
-    //
   }
 }

@@ -1,6 +1,6 @@
-import { config } from '../common/config';
 import { answerMain } from '../common/ipc';
 import { initUnhandled } from '../common/unhandled';
+import { rendererConfig } from './config';
 import { initWindowContextMenu } from './context-menu';
 import { TabManager } from './tabs/TabManager';
 import { initTheme } from './theme';
@@ -8,7 +8,7 @@ import { initTheme } from './theme';
 import './styles/index.scss';
 
 initUnhandled();
-config.initRenderer();
+rendererConfig.init();
 initTheme();
 
 const container: HTMLElement = document.querySelector('#app');

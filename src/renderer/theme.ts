@@ -1,8 +1,8 @@
-import { config } from '../common/config';
+import { rendererConfig } from './config';
 
 function updateTheme(): void {
   const bodyClasses = document.body.classList;
-  const darkMode = config.get('darkMode');
+  const darkMode = rendererConfig.get('darkMode');
 
   bodyClasses.toggle('theme-default', !darkMode);
   bodyClasses.toggle('theme-dark', darkMode);
@@ -11,7 +11,7 @@ function updateTheme(): void {
 export function initTheme(): void {
   updateTheme();
 
-  config.onChange('darkMode', () => {
+  rendererConfig.onChange('darkMode', () => {
     updateTheme();
   });
 }

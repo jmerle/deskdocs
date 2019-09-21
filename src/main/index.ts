@@ -1,7 +1,7 @@
 import { app, Menu, session } from 'electron';
 import { is } from 'electron-util';
-import { config } from '../common/config';
 import { initUnhandled } from '../common/unhandled';
+import { mainConfig } from './config';
 import { menu } from './menu';
 import { createOrRestoreWindow } from './window';
 
@@ -28,7 +28,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 }
 
-config.initMain();
+mainConfig.init();
 
 app.on('second-instance', async () => {
   await createOrRestoreWindow();
