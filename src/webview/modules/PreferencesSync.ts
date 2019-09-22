@@ -6,6 +6,7 @@ export class PreferencesSync extends Module {
     super();
 
     this.initCookieWatching();
+    this.initConfigWatching();
   }
 
   protected shouldActivate(pathname: string): boolean {
@@ -24,6 +25,22 @@ export class PreferencesSync extends Module {
       for (const cookie of event.deleted) {
         webviewConfig.set(cookie.name, false);
       }
+    });
+  }
+
+  private initConfigWatching(): void {
+    this.onConfigChange('dark', (newValue: boolean) => {
+      app.settings.toggleDark(newValue);
+    });
+
+    this.onConfigChange('layout', (newValue: string) => {
+      for (const layout of app.settings.LAYOUTS) {
+        app.settings.setLayout(layout, (newValue || '').includes(layout));
+      }
+    });
+
+    this.onConfigChange('docs', () => {
+      app.reload();
     });
   }
 }
