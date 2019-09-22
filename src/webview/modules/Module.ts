@@ -11,8 +11,18 @@ export abstract class Module {
 
     if (this.activated) {
       if (this.firstNavigate) {
-        this.onFirstNavigate(pathname);
         this.firstNavigate = false;
+
+        const css = this.getCssToInject();
+        if (css !== null) {
+          const link = document.createElement('link');
+          link.setAttribute('rel', 'stylesheet');
+          link.setAttribute('type', 'text/css');
+          link.setAttribute('href', 'data:text/css;charset=UTF-8,' + encodeURIComponent(css));
+          document.head.appendChild(link);
+        }
+
+        this.onFirstNavigate(pathname);
       }
 
       this.onNavigate(pathname);
@@ -29,6 +39,11 @@ export abstract class Module {
 
   protected onFirstNavigate(pathname: string): void {
     // Let implementations override this
+  }
+
+  protected getCssToInject(): string {
+    // Let implementations override this
+    return null;
   }
 
   protected onConfigChange(key: string, cb: OnChangeCallback): void {

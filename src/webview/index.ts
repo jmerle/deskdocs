@@ -1,5 +1,6 @@
 import { webviewConfig } from './config';
 import { modules } from './modules';
+import { triggerOverride } from './utils/trigger-override';
 
 declare global {
   const app: any;
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   forceDesktopLayout();
 
   await waitUntilAppLoaded();
+  triggerOverride.init();
 
   if (app.router.context !== undefined) {
     onNavigate(window.location.pathname);

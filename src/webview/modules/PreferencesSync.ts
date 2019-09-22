@@ -1,3 +1,4 @@
+import { defaultConfig } from '../../common/config/defaults';
 import { webviewConfig } from '../config';
 import { Module } from './Module';
 
@@ -17,7 +18,8 @@ export class PreferencesSync extends Module {
       }
 
       for (const cookie of event.deleted) {
-        webviewConfig.set(cookie.name, false);
+        const value = typeof defaultConfig[cookie.name] === 'string' ? '' : false;
+        webviewConfig.set(cookie.name, value);
       }
     });
   }

@@ -31,7 +31,7 @@ export class ShortcutManager {
   }
 
   public registerShortcut(shortcut: Shortcut): void {
-    if (this.shortcuts.has(shortcut.name) && this.win.isFocused()) {
+    if (this.shortcuts.has(shortcut.name) && (this.win.isFocused() || shortcut.global)) {
       this.unregisterGlobalShortcut(this.shortcuts.get(shortcut.name));
     }
 

@@ -1,9 +1,33 @@
 import { webviewConfig } from '../config';
 import { buildPreferences, PreferenceType } from '../preferences';
+import { triggerOverride } from '../utils/trigger-override';
 import { Module } from './Module';
 
 export class PreferencesPage extends Module {
   private syncedCookies: string[] = [];
+
+  protected getCssToInject(): string {
+    return `
+      #deskdocs-inputs > ._settings-label > small {
+        margin-left: 30px;
+      }
+    
+      .accelerator-label,
+      .accelerator-input {
+        display: block;
+        margin-left: 28px;
+      }
+      
+      .accelerator-input {
+        background: var(--contentBackground);
+        color: var(--textColor);
+        padding: 5px;
+        border: 1px solid var(--searchBorder);
+        border-radius: 3px;
+        height: 1.5rem;
+      }
+    `;
+  }
 
   protected shouldActivate(pathname: string): boolean {
     return pathname === '/settings';
@@ -51,7 +75,7 @@ export class PreferencesPage extends Module {
         case 'checkbox':
           type = PreferenceType.Checkbox;
           break;
-        case 'string':
+        case 'text':
           type = PreferenceType.Accelerator;
           break;
       }
@@ -96,13 +120,35 @@ export class PreferencesPage extends Module {
   private addAccelerator(id: string, currentValue: string, label: string, description?: string): void {
     const labelHtml = `
       <label class="_settings-label">
-        <input type="text" name="${id}" value="${currentValue}">
-        ${label}
-        ${description === undefined ? '' : `<small>${description}</small>`}
+        <div class="accelerator-label">${label}</div>
+        <input type="text" class="accelerator-input" name="${id}" value="${currentValue}">
+        <small>Only works if the given shortcut is a valid <a href="https://electronjs.org/docs/api/accelerator">Electron accelerator</a>.</small>
       </label>
     `;
 
     this.addInput(labelHtml);
+
+    const input = document.querySelector<HTMLInputElement>(`input[name="${id}"]`);
+    const triggersToDisable = ['typing', 'enter', 'escape'];
+
+    input.addEventListener('focus', () => {
+      triggerOverride.disableDefaultBehavior(triggersToDisable);
+    });
+
+    input.addEventListener('blur', () => {
+      triggerOverride.enableDefaultBehavior(triggersToDisable);
+    });
+
+    const onChange = () => {
+      const currentInput = document.querySelector<HTMLInputElement>(`input[name="${id}"]`);
+      app.settings.set(id, currentInput.value);
+    };
+
+    input.addEventListener('input', () => onChange());
+    input.addEventListener('change', event => {
+      onChange();
+      event.stopPropagation();
+    });
   }
 
   private updateCheckbox(id: string, newValue: boolean | string): void {
@@ -121,7 +167,8 @@ export class PreferencesPage extends Module {
   }
 
   private updateAccelerator(id: string, newValue: string): void {
-    //
+    const input = document.querySelector<HTMLInputElement>(`input[name="${id}"]`);
+    input.value = newValue;
   }
 
   private addInput(html: string): void {
