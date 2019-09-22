@@ -11,14 +11,6 @@ export class Tab extends EventEmitter<TabEvents> {
     super();
 
     this.initEvents();
-
-    this.webview.addEventListener('dom-ready', () => {
-      initWebviewContextMenu(webview);
-
-      if (this.index === 0) {
-        this.webview.openDevTools();
-      }
-    });
   }
 
   private initEvents(): void {
@@ -31,10 +23,18 @@ export class Tab extends EventEmitter<TabEvents> {
     this.tabEl.querySelector('.chrome-tab-close').addEventListener('click', event => {
       this.emit('close');
     });
+
+    this.webview.addEventListener('dom-ready', () => {
+      initWebviewContextMenu(this.webview);
+    });
   }
 
   public setVisibility(visible: boolean): void {
     const classes = this.webview.classList;
     classes.toggle('hidden', !visible);
+  }
+
+  public send(channel: string, data?: any): void {
+    this.webview.send(channel, data);
   }
 }

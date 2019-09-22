@@ -58,6 +58,8 @@ function configureWindow(window: BrowserWindow): void {
     currentGlobalShortcut = newShortcut;
     globalShortcut.register(currentGlobalShortcut, globalShortcutCallback);
   });
+
+  registerWindowShortcut(window, 'CommandOrControl+F', 'openInPageSearch');
 }
 
 export async function createOrRestoreWindow(): Promise<void> {
@@ -74,12 +76,6 @@ export async function createOrRestoreWindow(): Promise<void> {
       webviewTag: true,
     },
   });
-
-  if (is.development) {
-    mainWindow.webContents.openDevTools({
-      mode: 'bottom',
-    });
-  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;

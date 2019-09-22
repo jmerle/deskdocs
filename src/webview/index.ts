@@ -1,6 +1,9 @@
+import { remote } from 'electron';
 import { webviewConfig } from './config';
-import { createModules } from './modules';
-import { Module } from './modules/Module';
+import { modules } from './modules';
+
+// tslint:disable-next-line:no-var-requires
+const { FindInPage } = require('electron-find');
 
 declare global {
   const app: any;
@@ -8,7 +11,7 @@ declare global {
 
 webviewConfig.init();
 
-function onNavigate(modules: Module[], currentPathname: string): void {
+function onNavigate(currentPathname: string): void {
   for (const module of modules) {
     module.update(currentPathname);
   }
@@ -50,13 +53,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   forceDesktopLayout();
 
   await waitUntilAppLoaded();
-  const modules = createModules();
+
+  const findInPage = new FindInPage(remote.getCurrentWebContents(), {
+    preload: true,
+    parentElement: document.querySelector('._content'),
+    offsetTop: 10,
+    offsetRight: 10,
+  });
+
+  setTimeout(() => {
+    findInPage.openFindWindow();
+  }, 10000);
 
   if (app.router.context !== undefined) {
-    onNavigate(modules, window.location.pathname);
+    onNavigate(window.location.pathname);
   }
 
   app.router.on('after', (type: string, details: any) => {
-    onNavigate(modules, details.path);
+    onNavigate(details.path);
   });
 });

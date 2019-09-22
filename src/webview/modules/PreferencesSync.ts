@@ -2,15 +2,9 @@ import { webviewConfig } from '../config';
 import { Module } from './Module';
 
 export class PreferencesSync extends Module {
-  constructor() {
-    super();
-
+  protected onFirstNavigate(pathname: string): void {
     this.initCookieWatching();
     this.initConfigWatching();
-  }
-
-  protected shouldActivate(pathname: string): boolean {
-    return true;
   }
 
   private initCookieWatching(): void {

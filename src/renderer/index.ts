@@ -35,9 +35,17 @@ answerMain('addTab', () => {
 });
 
 answerMain('closeCurrentTab', () => {
-  manager.closeCurrentTab();
+  manager.closeTab(manager.getCurrentTab());
 });
 
 answerMain('showTab', ({ index }) => {
   manager.showTabAtIndex(index);
+});
+
+rendererConfig.onChange('showSingleTab', () => {
+  manager.updateTabContainerVisibility();
+});
+
+answerMain('openInPageSearch', () => {
+  manager.getCurrentTab().send('openInPageSearch');
 });

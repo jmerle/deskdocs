@@ -30,6 +30,8 @@ export abstract class BaseConfig extends ElectronStore<any> {
         autoRestore: false,
       },
     });
+
+    (this as any).events.setMaxListeners(50);
   }
 
   protected abstract initListeners(): void;

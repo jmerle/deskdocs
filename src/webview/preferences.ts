@@ -37,6 +37,12 @@ export const preferences: Preference[] = [
   {
     id: 'showSingleTab',
     type: PreferenceType.Checkbox,
+    label: 'Show single tab',
+    description: 'With this checked, the tab bar will also be visible when there is only one visible tab.',
+  },
+  {
+    id: 'autoRestore',
+    type: PreferenceType.Checkbox,
     label: 'Enable auto restore',
     description:
       'With this checked, tabs that were open when DeskDocs was last closed will be re-opened when DeskDocs is started again.',

@@ -3,7 +3,7 @@ import { preferences, PreferenceType } from '../preferences';
 import { Module } from './Module';
 
 export class PreferencesPage extends Module {
-  private syncedIds: string[] = [];
+  private syncedCookies: string[] = [];
 
   protected shouldActivate(pathname: string): boolean {
     return pathname === '/settings';
@@ -63,11 +63,11 @@ export class PreferencesPage extends Module {
   }
 
   private syncPreference(id: string, type: PreferenceType, cookie: string = id): void {
-    if (this.syncedIds.includes(id)) {
+    if (this.syncedCookies.includes(cookie)) {
       return;
     }
 
-    this.syncedIds.push(id);
+    this.syncedCookies.push(cookie);
 
     this.onConfigChange(cookie, newValue => {
       switch (type) {

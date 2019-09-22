@@ -1,7 +1,7 @@
-import { WebviewTag } from 'electron';
-import { api, is } from 'electron-util';
+import { remote, WebviewTag } from 'electron';
+import { is } from 'electron-util';
 import * as path from 'path';
-import { DEFAULT_URL } from '../../common/constants';
+import { BASE_URL } from '../../common/constants';
 import { rendererConfig } from '../config';
 import { ImprovedChromeTabs } from './ImprovedChromeTabs';
 import { Tab } from './Tab';
@@ -26,7 +26,7 @@ export class TabManager {
     });
 
     this.tabsContainer.addEventListener('tabReorder', () => {
-      this.orderTabs();
+      this.sortTabsArray();
     });
   }
 
@@ -38,9 +38,13 @@ export class TabManager {
     return this.tabs.length;
   }
 
-  public addTab(url: string = DEFAULT_URL): void {
+  public getCurrentTab(): Tab {
+    return this.getTabById(this.chromeTabs.activeTabEl.id);
+  }
+
+  public addTab(pathname: string = '/'): void {
     const tabEl = this.createTab();
-    const webview = this.createWebview(url);
+    const webview = this.createWebview(pathname);
 
     const id = this.generateId();
     tabEl.id = id;
@@ -55,7 +59,6 @@ export class TabManager {
     this.showTab(tab);
     this.updateTabContainerVisibility();
   }
-
   public closeTab(tab: Tab): void {
     this.chromeTabs.removeTab(tab.tabEl);
     tab.webview.remove();
@@ -65,18 +68,8 @@ export class TabManager {
     this.updateTabContainerVisibility();
 
     if (this.tabs.length === 0) {
-      api.app.quit();
+      remote.app.quit();
     }
-  }
-
-  public closeCurrentTab(): void {
-    const tabEl = this.chromeTabs.activeTabEl;
-
-    if (tabEl === null) {
-      return;
-    }
-
-    this.closeTab(this.getTabById(tabEl.id));
   }
 
   public closeOtherTabs(tab: Tab): void {
@@ -97,6 +90,11 @@ export class TabManager {
     this.showTab(this.tabs[index]);
   }
 
+  public updateTabContainerVisibility(): void {
+    const hidden = !rendererConfig.get('showSingleTab') && this.tabs.length <= 1;
+    this.tabsContainer.classList.toggle('hidden', hidden);
+  }
+
   private showTab(tab: Tab): void {
     if (this.chromeTabs.activeTabEl.id !== tab.id) {
       this.chromeTabs.setCurrentTab(tab.tabEl);
@@ -105,7 +103,7 @@ export class TabManager {
     this.tabs.forEach(t => t.setVisibility(t.id === tab.id));
   }
 
-  private orderTabs(): void {
+  private sortTabsArray(): void {
     const currentIds = this.chromeTabs.tabEls.map(t => t.id);
     this.tabs.sort((a, b) => currentIds.indexOf(a.id) - currentIds.indexOf(b.id));
   }
@@ -114,10 +112,6 @@ export class TabManager {
     this.tabs.forEach((t, i) => {
       t.index = i;
     });
-  }
-
-  private updateTabContainerVisibility(): void {
-    this.tabsContainer.classList.toggle('hidden', this.tabs.length <= 1);
   }
 
   private createTab(): HTMLElement {
@@ -129,9 +123,9 @@ export class TabManager {
     return tabEls[tabEls.length - 1];
   }
 
-  private createWebview(url: string): WebviewTag {
+  private createWebview(pathname: string): WebviewTag {
     const webview = document.createElement('webview');
-    webview.setAttribute('src', url);
+    webview.setAttribute('src', BASE_URL + pathname);
     webview.setAttribute('webpreferences', 'experimentalFeatures');
 
     const preloadPath = is.development ? '../../../dist/renderer/webview.js' : 'webview.js';
