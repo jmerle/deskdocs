@@ -14,11 +14,11 @@ initTheme();
 const container: HTMLElement = document.querySelector('#app');
 
 container.innerHTML = `
-    <div id="tabs" class="chrome-tabs hidden">
-      <div class="chrome-tabs-content"></div>
-    </div>
-    <div id="webviews"></div>
-  `;
+  <div id="tabs" class="chrome-tabs hidden">
+    <div class="chrome-tabs-content"></div>
+  </div>
+  <div id="webviews"></div>
+`;
 
 const tabsContainer: HTMLElement = container.querySelector('#tabs');
 const webviewsContainer: HTMLElement = container.querySelector('#webviews');

@@ -1,8 +1,17 @@
-import { BrowserView } from 'electron';
+import { BrowserView, BrowserWindow } from 'electron';
 import { ipcMain, ipcRenderer, MainProcessIpc, RendererProcessIpc } from 'electron-better-ipc';
 
-export const callMain = (ipcRenderer || ({} as any)).callMain;
-export const callRenderer = (ipcMain || ({} as any)).callRenderer;
+export function callMain(channel: string, data?: any): Promise<unknown> {
+  return ipcRenderer.callMain(channel, data).catch(() => {
+    // Do nothing
+  });
+}
+
+export function callRenderer(browserWindow: BrowserWindow, channel: string, data?: any): Promise<unknown> {
+  return ipcMain.callRenderer(browserWindow, channel, data).catch(() => {
+    // Do nothing
+  });
+}
 
 export function answerMain(
   channel: string,
