@@ -1,5 +1,5 @@
 import { Accelerator, BrowserWindow, globalShortcut } from 'electron';
-import { callRenderer } from '../common/ipc';
+import { callRenderer } from '../../common/ipc';
 
 export interface Shortcut {
   name: string;

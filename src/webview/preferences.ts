@@ -60,6 +60,14 @@ export function buildPreferences(): Preference[] {
       description:
         'With this checked, the "Enable dark theme" option will stop working and the system theme will be used instead.',
     });
+  } else {
+    preferences.push({
+      id: 'hideMenuBar',
+      type: PreferenceType.Checkbox,
+      label: 'Hide menu bar',
+      description:
+        'With this checked, the menu bar will automatically hide and will show up again by pressing the <code class="_label">alt</code> key.',
+    });
   }
 
   return preferences;

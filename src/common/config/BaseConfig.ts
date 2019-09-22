@@ -30,6 +30,8 @@ export abstract class BaseConfig extends ElectronStore<any> {
 
         showSingleTab: false,
         autoRestore: false,
+
+        hideMenuBar: !is.macos,
       },
     });
 
