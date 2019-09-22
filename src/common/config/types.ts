@@ -25,4 +25,8 @@ export interface OnChangeKeyEvent {
   };
 }
 
-export type ConfigEvent = OnChangeEvent | OnAnyChangeEvent | OnChangeKeyEvent;
+export interface NewClientEvent {
+  type: 'newClient';
+}
+
+export type ConfigEvent = OnChangeEvent | OnAnyChangeEvent | OnChangeKeyEvent | NewClientEvent;

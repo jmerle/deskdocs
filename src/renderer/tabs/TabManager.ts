@@ -136,8 +136,6 @@ export class TabManager {
     const preloadPath = is.development ? '../../../dist/renderer/webview.js' : 'webview.js';
     webview.setAttribute('preload', `file://${path.resolve(__dirname, preloadPath)}`);
 
-    rendererConfig.initWebviewTag(webview);
-
     this.webviewsContainer.appendChild(webview);
 
     return webview;

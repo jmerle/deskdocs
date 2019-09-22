@@ -1,6 +1,6 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron-better-ipc';
 import { BaseConfig } from '../common/config/BaseConfig';
-import { ConfigEvent } from '../common/config/config-types';
+import { ConfigEvent } from '../common/config/types';
 
 class WebviewConfig extends BaseConfig {
   protected initListeners(): void {

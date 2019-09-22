@@ -13,6 +13,7 @@ DeskDocs is a feature-rich desktop application for [DevDocs.io](https://devdocs.
 - [Global shortcut](#global-shortcut)
 - [Auto restore](#auto-restore)
 - [Adjustable text size](#adjustable-text-size)
+- [Toggleable menu bar](#toggleable-menu-bar)
 - [Launch on boot](#launch-on-boot)
 - [`devdocs://` protocol](#devdocs-protocol)
 - Cross-platform
@@ -55,6 +56,9 @@ TBD
 TBD
 
 ### Adjustable text size
+TBD
+
+### Toggleable menu bar
 TBD
 
 ### Launch on boot

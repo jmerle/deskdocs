@@ -1,5 +1,6 @@
 import { WebviewTag } from 'electron';
 import * as EventEmitter from 'eventemitter3';
+import { callMain } from '../../common/ipc';
 import { initWebviewContextMenu } from '../context-menu';
 
 interface TabEvents {
@@ -24,8 +25,18 @@ export class Tab extends EventEmitter<TabEvents> {
       this.emit('close');
     });
 
+    let needsContextMenu = true;
     this.webview.addEventListener('dom-ready', () => {
-      initWebviewContextMenu(this.webview);
+      if (needsContextMenu) {
+        initWebviewContextMenu(this.webview);
+        needsContextMenu = false;
+      }
+    });
+
+    this.webview.addEventListener('ipc-message', data => {
+      if (!this.webview.classList.contains('hidden')) {
+        callMain(data.channel, ...data.args);
+      }
     });
   }
 

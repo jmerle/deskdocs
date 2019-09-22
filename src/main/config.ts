@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { BaseConfig } from '../common/config/BaseConfig';
-import { ConfigEvent } from '../common/config/config-types';
+import { ConfigEvent } from '../common/config/types';
 import { answerRenderer, callRenderer } from '../common/ipc';
 
 class MainConfig extends BaseConfig {

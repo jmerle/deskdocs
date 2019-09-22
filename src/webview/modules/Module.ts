@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { OnAnyChangeCallback, OnChangeCallback } from '../../common/config/config-types';
+import { OnAnyChangeCallback, OnChangeCallback } from '../../common/config/types';
 import { webviewConfig } from '../config';
 
 export abstract class Module {

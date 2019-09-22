@@ -1,6 +1,6 @@
 import { WebviewTag } from 'electron';
 import { BaseConfig } from '../common/config/BaseConfig';
-import { ConfigEvent } from '../common/config/config-types';
+import { ConfigEvent } from '../common/config/types';
 import { answerMain, callMain } from '../common/ipc';
 
 class RendererConfig extends BaseConfig {
@@ -16,15 +16,6 @@ class RendererConfig extends BaseConfig {
 
   protected sendEvent(event: ConfigEvent): void {
     callMain(this.eventChannel, event);
-  }
-
-  public initWebviewTag(webview: WebviewTag): void {
-    webview.addEventListener('ipc-message', data => {
-      const target = data.target as Element;
-      if (!target.classList.contains('hidden')) {
-        callMain(data.channel, ...data.args);
-      }
-    });
   }
 }
 

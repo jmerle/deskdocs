@@ -1,5 +1,5 @@
 import ElectronStore from 'electron-store';
-import { is } from 'electron-util';
+import { defaultConfig } from './defaults';
 import {
   ConfigEvent,
   OnAnyChangeCallback,
@@ -7,7 +7,7 @@ import {
   OnChangeCallback,
   OnChangeEvent,
   OnChangeKeyEvent,
-} from './config-types';
+} from './types';
 
 export abstract class BaseConfig extends ElectronStore<any> {
   protected eventChannel = 'configEvent';
@@ -17,23 +17,7 @@ export abstract class BaseConfig extends ElectronStore<any> {
   private knownOnChangeKeys: string[] = [];
 
   constructor() {
-    super({
-      defaults: {
-        dark: false,
-        useSystemTheme: is.macos,
-
-        globalShortcut: 'CommandOrControl+Shift+D',
-        globalShortcutEnabled: true,
-
-        launchOnBoot: false,
-        startMinimized: false,
-
-        showSingleTab: false,
-        autoRestore: false,
-
-        hideMenuBar: !is.macos,
-      },
-    });
+    super({ defaults: defaultConfig });
 
     (this as any).events.setMaxListeners(50);
   }
@@ -54,6 +38,10 @@ export abstract class BaseConfig extends ElectronStore<any> {
     });
 
     this.initListeners();
+
+    this.sendEvent({
+      type: 'newClient',
+    });
   }
 
   public onChange(key: string, callback: OnChangeCallback): void {
@@ -85,6 +73,9 @@ export abstract class BaseConfig extends ElectronStore<any> {
         break;
       case 'onChangeKey':
         this.handleOnChangeKeyEvent(event);
+        break;
+      case 'newClient':
+        this.handleNewClientEvent();
         break;
     }
   }
@@ -124,5 +115,16 @@ export abstract class BaseConfig extends ElectronStore<any> {
     });
 
     this.knownOnChangeKeys.push(key);
+  }
+
+  private handleNewClientEvent(): void {
+    for (const key of this.knownOnChangeKeys) {
+      this.sendEvent({
+        type: 'onChangeKey',
+        payload: {
+          key,
+        },
+      });
+    }
   }
 }
