@@ -1,4 +1,5 @@
 import ElectronStore from 'electron-store';
+import { is } from 'electron-util';
 import {
   ConfigEvent,
   OnAnyChangeCallback,
@@ -19,6 +20,7 @@ export abstract class BaseConfig extends ElectronStore<any> {
     super({
       defaults: {
         dark: false,
+        useSystemTheme: is.macos,
 
         globalShortcut: 'CommandOrControl+Shift+D',
         globalShortcutEnabled: true,

@@ -1,5 +1,5 @@
 import { webviewConfig } from '../config';
-import { preferences, PreferenceType } from '../preferences';
+import { buildPreferences, PreferenceType } from '../preferences';
 import { Module } from './Module';
 
 export class PreferencesPage extends Module {
@@ -28,7 +28,7 @@ export class PreferencesPage extends Module {
   }
 
   private addPreferences(): void {
-    for (const { id, type, label, description } of preferences) {
+    for (const { id, type, label, description } of buildPreferences()) {
       const currentValue = webviewConfig.get(id);
 
       switch (type) {

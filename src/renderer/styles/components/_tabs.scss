@@ -1,8 +1,9 @@
 #tabs {
   padding-bottom: 0;
-  border-bottom: 1px solid #d2d2d2;
+  border-bottom: 1px solid var(--tabContainerBorderColor);
+  border-radius: 0;
 
-  transition: all 0.25s;
+  transition: height 0.25s;
 
   .chrome-tab {
     bottom: 0;

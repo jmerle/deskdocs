@@ -15,6 +15,7 @@ export class TabManager {
 
   public init(): void {
     this.chromeTabs.init(this.tabsContainer);
+    this.updateTheme();
 
     this.tabsContainer.addEventListener('activeTabChange', (event: any) => {
       const tabEl: HTMLElement = event.detail.tabEl;
@@ -27,6 +28,10 @@ export class TabManager {
 
     this.tabsContainer.addEventListener('tabReorder', () => {
       this.sortTabsArray();
+    });
+
+    rendererConfig.onChange('dark', () => {
+      this.updateTheme();
     });
   }
 
@@ -136,6 +141,10 @@ export class TabManager {
     this.webviewsContainer.appendChild(webview);
 
     return webview;
+  }
+
+  private updateTheme(): void {
+    this.tabsContainer.classList.toggle('chrome-tabs-dark-theme', rendererConfig.get('dark'));
   }
 
   private generateId(): string {

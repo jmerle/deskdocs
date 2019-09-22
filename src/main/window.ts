@@ -1,23 +1,11 @@
-import { Accelerator, BrowserWindow, globalShortcut } from 'electron';
+import { BrowserWindow, systemPreferences } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
-import { answerRenderer, callRenderer } from '../common/ipc';
 import { mainConfig } from './config';
+import { ShortcutManager } from './ShortcutManager';
 
 let mainWindow: BrowserWindow = null;
-
-function registerWindowShortcut(window: BrowserWindow, shortcut: Accelerator, message: string, data: any = {}): void {
-  window.on('focus', () => {
-    globalShortcut.register(shortcut, async () => {
-      await callRenderer(window, message, data);
-    });
-  });
-
-  window.on('blur', () => {
-    globalShortcut.unregister(shortcut);
-  });
-}
 
 function restoreWindow(window: BrowserWindow): void {
   if (window.isMinimized()) {
@@ -30,8 +18,12 @@ function restoreWindow(window: BrowserWindow): void {
 function configureWindow(window: BrowserWindow): void {
   window.setMaxListeners(15);
 
-  registerWindowShortcut(window, 'CommandOrControl+T', 'addTab');
-  registerWindowShortcut(window, 'CommandOrControl+W', 'closeCurrentTab');
+  const shortcutManager = new ShortcutManager(window);
+
+  shortcutManager.register('openInPageSearch', 'CommandOrControl+F');
+
+  shortcutManager.register('addTab', 'CommandOrControl+T');
+  shortcutManager.register('closeCurrentTab', 'CommandOrControl+W');
 
   for (let i = 0; i < 10; i++) {
     const shortcut = `${is.macos ? 'Command' : 'Alt'}+${i}`;
@@ -39,27 +31,46 @@ function configureWindow(window: BrowserWindow): void {
       index: i === 0 ? 9 : i - 1,
     };
 
-    registerWindowShortcut(window, shortcut, 'showTab', data);
+    shortcutManager.register('showTab', shortcut, data);
   }
 
-  const globalShortcutCallback = () => {
-    if (window.isFocused()) {
-      window.minimize();
+  const updateGlobalShortcut = () => {
+    const globalShortcut = mainConfig.get('globalShortcut');
+    const globalShortcutEnabled = mainConfig.get('globalShortcutEnabled');
+
+    if (globalShortcutEnabled) {
+      shortcutManager.registerShortcut({
+        name: 'globalShortcut',
+        accelerator: globalShortcut,
+        global: true,
+        action: () => {
+          if (window.isFocused()) {
+            window.minimize();
+          } else {
+            restoreWindow(window);
+          }
+        },
+      });
     } else {
-      restoreWindow(window);
+      shortcutManager.unregister('globalShortcut');
     }
   };
 
-  let currentGlobalShortcut: Accelerator = mainConfig.get('globalShortcut') as Accelerator;
-  globalShortcut.register(currentGlobalShortcut, globalShortcutCallback);
+  updateGlobalShortcut();
+  mainConfig.onChange('globalShortcut', () => updateGlobalShortcut());
+  mainConfig.onChange('globalShortcutEnabled', () => updateGlobalShortcut());
 
-  answerRenderer('updateGlobalShortcut', (newShortcut: Accelerator) => {
-    globalShortcut.unregister(currentGlobalShortcut);
-    currentGlobalShortcut = newShortcut;
-    globalShortcut.register(currentGlobalShortcut, globalShortcutCallback);
-  });
+  if (is.macos) {
+    const updateBySystemTheme = () => {
+      if (mainConfig.get('useSystemTheme')) {
+        mainConfig.set('dark', systemPreferences.isDarkMode());
+      }
+    };
 
-  registerWindowShortcut(window, 'CommandOrControl+F', 'openInPageSearch');
+    updateBySystemTheme();
+    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => updateBySystemTheme());
+    mainConfig.onChange('dark', () => updateBySystemTheme());
+  }
 }
 
 export async function createOrRestoreWindow(): Promise<void> {
