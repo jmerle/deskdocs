@@ -5,10 +5,17 @@ import { initWebviewContextMenu } from '../context-menu';
 
 interface TabEvents {
   close: [];
+  pathname: [string];
 }
 
 export class Tab extends EventEmitter<TabEvents> {
-  constructor(public id: string, public index: number, public tabEl: HTMLElement, public webview: WebviewTag) {
+  constructor(
+    public id: string,
+    public index: number,
+    public tabEl: HTMLElement,
+    public webview: WebviewTag,
+    public pathname: string,
+  ) {
     super();
 
     this.initEvents();
@@ -34,6 +41,11 @@ export class Tab extends EventEmitter<TabEvents> {
     });
 
     this.webview.addEventListener('ipc-message', data => {
+      if (data.channel === 'pathname') {
+        this.pathname = data.args[0].pathname;
+        this.emit('pathname', this.pathname);
+      }
+
       if (!this.webview.classList.contains('hidden')) {
         callMain(data.channel, ...data.args);
       }

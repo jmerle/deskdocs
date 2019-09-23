@@ -1,3 +1,4 @@
+import { AutoRestore } from './AutoRestore';
 import { InPageSearch } from './InPageSearch';
 import { Module } from './Module';
 import { PreferenceActions } from './PreferenceActions';
@@ -9,4 +10,5 @@ export const modules: Module[] = [
   new PreferencesPage(),
   new PreferenceActions(),
   new InPageSearch(),
+  new AutoRestore(),
 ];

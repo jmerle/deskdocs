@@ -28,8 +28,6 @@ const manager = new TabManager(tabsContainer, webviewsContainer);
 manager.init();
 initWindowContextMenu(manager);
 
-manager.addTab();
-
 answerMain('addTab', () => {
   manager.addTab();
 });
@@ -39,7 +37,6 @@ answerMain('closeCurrentTab', () => {
 });
 
 answerMain('showTab', ({ index }) => {
-  console.log('showTab', index);
   manager.showTabAtIndex(index);
 });
 
@@ -50,3 +47,17 @@ rendererConfig.onChange('showSingleTab', () => {
 answerMain('openInPageSearch', () => {
   manager.getCurrentTab().send('openInPageSearch');
 });
+
+const autoRestoreEnabled = rendererConfig.get('autoRestore');
+const autoRestorePathnames = rendererConfig.get('autoRestorePathnames');
+const autoRestoreCurrentTab = rendererConfig.get('autoRestoreCurrentTab');
+
+if (autoRestoreEnabled && autoRestorePathnames.length > 0 && autoRestoreCurrentTab > -1) {
+  for (const pathname of autoRestorePathnames) {
+    manager.addTab(pathname);
+  }
+
+  manager.showTabAtIndex(autoRestoreCurrentTab);
+} else {
+  manager.addTab();
+}

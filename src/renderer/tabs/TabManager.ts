@@ -46,7 +46,13 @@ export class TabManager {
   }
 
   public getCurrentTab(): Tab {
-    return this.getTabById(this.chromeTabs.activeTabEl.id);
+    const tabEl = this.chromeTabs.activeTabEl;
+
+    if (tabEl === null) {
+      return null;
+    }
+
+    return this.getTabById(tabEl.id);
   }
 
   public addTab(pathname: string = '/'): void {
@@ -56,11 +62,15 @@ export class TabManager {
     const id = this.generateId();
     tabEl.id = id;
 
-    const tab = new Tab(id, this.tabs.length, tabEl, webview);
+    const tab = new Tab(id, this.tabs.length, tabEl, webview, pathname);
     this.tabs.push(tab);
 
     tab.once('close', () => {
       this.closeTab(tab);
+    });
+
+    tab.on('pathname', () => {
+      this.updateAutoRestoreConfig();
     });
 
     this.showTab(tab);
@@ -152,7 +162,9 @@ export class TabManager {
   }
 
   private updateAutoRestoreConfig(): void {
-    //
+    const currentTab = this.getCurrentTab();
+    rendererConfig.set('autoRestorePathnames', this.tabs.map(tab => tab.pathname));
+    rendererConfig.set('autoRestoreCurrentTab', currentTab === null ? -1 : currentTab.index);
   }
 
   private generateId(): string {

@@ -10,8 +10,10 @@ export const defaultConfig: any = {
   launchOnBoot: false,
   launchToTray: false,
 
-  showSingleTab: false,
   autoRestore: false,
+  autoRestorePathnames: [],
+  autoRestoreCurrentTab: -1,
 
+  showSingleTab: false,
   hideMenuBar: !is.macos,
 };
