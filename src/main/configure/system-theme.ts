@@ -13,5 +13,6 @@ export function configureSystemTheme(): void {
     updateBySystemTheme();
     systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => updateBySystemTheme());
     mainConfig.onChange('dark', () => updateBySystemTheme());
+    mainConfig.onChange('useSystemTheme', () => updateBySystemTheme());
   }
 }

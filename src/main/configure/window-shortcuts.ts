@@ -1,7 +1,10 @@
+import { BrowserWindow } from 'electron';
 import { is } from 'electron-util';
-import { ShortcutManager } from './ShortcutManager';
+import { WindowShortcutManager } from '../shortcuts/WindowShortcutManager';
 
-export function configureWindowShortcuts(shortcutManager: ShortcutManager): void {
+export function configureWindowShortcuts(mainWindow: BrowserWindow): void {
+  const shortcutManager = new WindowShortcutManager(mainWindow);
+
   shortcutManager.register('openInPageSearch', 'CommandOrControl+F');
 
   shortcutManager.register('addTab', 'CommandOrControl+T');

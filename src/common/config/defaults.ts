@@ -8,7 +8,7 @@ export const defaultConfig: any = {
   globalShortcutEnabled: true,
 
   launchOnBoot: false,
-  startMinimized: false,
+  launchToTray: false,
 
   showSingleTab: false,
   autoRestore: false,

@@ -20,9 +20,9 @@ export function buildPreferences(): Preference[] {
       label: 'Launch on boot',
     },
     {
-      id: 'startMinimized',
+      id: 'launchToTray',
       type: PreferenceType.Checkbox,
-      label: 'Launch minimized',
+      label: 'Launch to tray',
       description: 'With this checked, DeskDocs will minimize itself to the tray when it is started.',
     },
     {

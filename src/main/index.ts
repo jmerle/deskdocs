@@ -1,8 +1,14 @@
-import { app, Menu, session } from 'electron';
+import { app, Menu } from 'electron';
 import { is } from 'electron-util';
 import { initUnhandled } from '../common/unhandled';
 import { mainConfig } from './config';
+import { configureContentSecurityPolicy } from './configure/content-security-policy';
+import { configureGlobalShortcut } from './configure/global-shortcut';
+import { configureLaunchOnBoot } from './configure/launch-on-boot';
+import { configureSystemTheme } from './configure/system-theme';
+import { configureTray } from './configure/tray';
 import { menu } from './menu';
+import { startQuitting } from './quit';
 import { createOrRestoreWindow } from './window';
 
 declare global {
@@ -44,20 +50,22 @@ app.on('activate', async () => {
   await createOrRestoreWindow();
 });
 
+app.on('before-quit', () => {
+  startQuitting();
+});
+
 (async () => {
   await app.whenReady();
 
-  session.defaultSession.webRequest.onHeadersReceived((details: any, callback) => {
-    if (details.url.startsWith('https://devdocs.io/')) {
-      delete details.responseHeaders['content-security-policy'];
-    }
-
-    callback({
-      cancel: false,
-      responseHeaders: details.responseHeaders,
-    });
-  });
-
   Menu.setApplicationMenu(menu);
-  await createOrRestoreWindow();
+
+  configureTray();
+  configureContentSecurityPolicy();
+  configureGlobalShortcut();
+  configureLaunchOnBoot();
+  configureSystemTheme();
+
+  if (!mainConfig.get('launchToTray')) {
+    await createOrRestoreWindow();
+  }
 })();

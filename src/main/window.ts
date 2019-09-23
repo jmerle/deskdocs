@@ -2,24 +2,11 @@ import { BrowserWindow } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
-import { configureGlobalShortcut } from './global-shortcut';
-import { configureLaunchOnBoot } from './launch-on-boot';
-import { configureMenuVisibility } from './menu-visibility';
-import { ShortcutManager } from './ShortcutManager';
-import { configureSystemTheme } from './system-theme';
-import { configureWindowShortcuts } from './window-shortcuts';
+import { configureMenuVisibility } from './configure/menu-visibility';
+import { configureWindowShortcuts } from './configure/window-shortcuts';
+import { isQuitting } from './quit';
 
 let mainWindow: BrowserWindow = null;
-
-function configureWindow(): void {
-  const shortcutManager = new ShortcutManager(mainWindow);
-
-  configureLaunchOnBoot();
-  configureWindowShortcuts(shortcutManager);
-  configureGlobalShortcut(mainWindow, shortcutManager);
-  configureMenuVisibility(mainWindow);
-  configureSystemTheme();
-}
 
 export function restoreWindow(): void {
   if (mainWindow.isMinimized()) {
@@ -27,6 +14,16 @@ export function restoreWindow(): void {
   }
 
   mainWindow.show();
+}
+
+export function toggleWindow(): void {
+  if (mainWindow === null) {
+    createOrRestoreWindow();
+  } else if (mainWindow.isFocused()) {
+    mainWindow.minimize();
+  } else {
+    restoreWindow();
+  }
 }
 
 export async function createOrRestoreWindow(): Promise<void> {
@@ -44,11 +41,21 @@ export async function createOrRestoreWindow(): Promise<void> {
     },
   });
 
+  mainWindow.on('close', (event: Event) => {
+    if (!isQuitting()) {
+      event.preventDefault();
+      mainWindow.hide();
+      event.returnValue = false;
+    }
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 
-  configureWindow();
+  configureWindowShortcuts(mainWindow);
+  configureMenuVisibility(mainWindow);
+
   mainWindow.maximize();
 
   if (is.development) {
