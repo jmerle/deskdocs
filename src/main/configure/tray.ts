@@ -1,6 +1,6 @@
 import { app, Menu, Tray } from 'electron';
 import * as path from 'path';
-import { startQuitting } from '../quit';
+import { startQuitting } from '../utils/state';
 import { createOrRestoreWindow } from '../window';
 
 let tray: Tray = null;

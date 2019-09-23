@@ -8,7 +8,7 @@ import { configureLaunchOnBoot } from './configure/launch-on-boot';
 import { configureSystemTheme } from './configure/system-theme';
 import { configureTray } from './configure/tray';
 import { menu } from './menu';
-import { startQuitting } from './quit';
+import { startQuitting } from './utils/state';
 import { createOrRestoreWindow } from './window';
 
 declare global {

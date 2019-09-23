@@ -1,8 +1,8 @@
 import { BrowserWindow } from 'electron';
-import { WindowShortcutManager } from '../shortcuts/WindowShortcutManager';
+import { ShortcutManager } from '../utils/ShortcutManager';
 
 export function configureWindowShortcuts(mainWindow: BrowserWindow): void {
-  const shortcutManager = new WindowShortcutManager(mainWindow);
+  const shortcutManager = new ShortcutManager(mainWindow);
 
   shortcutManager.register('CommandOrControl+F', 'openInPageSearch');
 

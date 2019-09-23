@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as url from 'url';
 import { configureMenuVisibility } from './configure/menu-visibility';
 import { configureWindowShortcuts } from './configure/window-shortcuts';
-import { isQuitting } from './quit';
+import { isQuitting } from './utils/state';
 
 let mainWindow: BrowserWindow = null;
 
