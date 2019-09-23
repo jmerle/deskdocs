@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
@@ -44,8 +44,12 @@ export async function createOrRestoreWindow(): Promise<void> {
   mainWindow.on('close', (event: Event) => {
     if (!isQuitting()) {
       event.preventDefault();
-      mainWindow.hide();
-      event.returnValue = false;
+
+      if (is.macos) {
+        app.hide();
+      } else {
+        mainWindow.hide();
+      }
     }
   });
 
