@@ -39,6 +39,7 @@ answerMain('closeCurrentTab', () => {
 });
 
 answerMain('showTab', ({ index }) => {
+  console.log('showTab', index);
   manager.showTabAtIndex(index);
 });
 

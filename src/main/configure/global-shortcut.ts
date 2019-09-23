@@ -5,18 +5,21 @@ import { toggleWindow } from '../window';
 // tslint:disable-next-line:no-var-requires
 const isAccelerator = require('electron-is-accelerator');
 
+let previousGlobalShortcut: string = null;
+
 function updateGlobalShortcut(): void {
   const globalShortcut = mainConfig.get('globalShortcut');
   const globalShortcutEnabled = mainConfig.get('globalShortcutEnabled');
 
   if (globalShortcut && globalShortcutEnabled && isAccelerator(globalShortcut)) {
-    globalShortcutManager.registerShortcut({
-      name: 'globalShortcut',
-      accelerator: globalShortcut,
-      action: () => toggleWindow(),
-    });
-  } else {
-    globalShortcutManager.unregister('globalShortcut');
+    if (previousGlobalShortcut !== null) {
+      globalShortcutManager.unregister(previousGlobalShortcut);
+    }
+
+    previousGlobalShortcut = globalShortcut;
+    globalShortcutManager.registerShortcut(globalShortcut, () => toggleWindow());
+  } else if (previousGlobalShortcut !== null) {
+    globalShortcutManager.unregister(previousGlobalShortcut);
   }
 }
 

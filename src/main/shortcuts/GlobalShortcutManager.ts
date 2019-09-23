@@ -1,6 +1,6 @@
-import { Shortcut, ShortcutManager } from './ShortcutManager';
+import { ShortcutManager } from './ShortcutManager';
 
-class GlobalShortcutManager extends ShortcutManager<Shortcut> {
+class GlobalShortcutManager extends ShortcutManager {
   protected shouldUnregisterExistingShortcut(): boolean {
     return true;
   }

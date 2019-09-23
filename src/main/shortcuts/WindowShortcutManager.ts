@@ -1,24 +1,20 @@
-import { Accelerator, BrowserWindow } from 'electron';
+import { Accelerator, BrowserWindow, globalShortcut } from 'electron';
 import { callRenderer } from '../../common/ipc';
-import { Shortcut, ShortcutManager } from './ShortcutManager';
+import { ShortcutManager } from './ShortcutManager';
 
-export interface WindowShortcut extends Shortcut {
-  data?: any;
-}
-
-export class WindowShortcutManager extends ShortcutManager<WindowShortcut> {
+export class WindowShortcutManager extends ShortcutManager {
   constructor(private win: BrowserWindow) {
     super();
 
     this.win.on('focus', () => {
-      for (const shortcut of this.shortcuts.values()) {
-        this.registerGlobalShortcut(shortcut);
+      for (const accelerator of this.shortcuts.keys()) {
+        globalShortcut.register(accelerator, () => this.shortcuts.get(accelerator)());
       }
     });
 
     this.win.on('blur', () => {
-      for (const shortcut of this.shortcuts.values()) {
-        this.unregisterGlobalShortcut(shortcut);
+      for (const accelerator of this.shortcuts.keys()) {
+        globalShortcut.unregister(accelerator);
       }
     });
   }
@@ -31,14 +27,7 @@ export class WindowShortcutManager extends ShortcutManager<WindowShortcut> {
     return this.win.isFocused();
   }
 
-  public register(name: string, accelerator: Accelerator, data?: any): void {
-    this.registerShortcut({
-      name,
-      accelerator,
-      data,
-      action: () => {
-        callRenderer(this.win, name, data);
-      },
-    });
+  public register(accelerator: Accelerator, name: string, data?: any): void {
+    this.registerShortcut(accelerator, () => callRenderer(this.win, name, data));
   }
 }

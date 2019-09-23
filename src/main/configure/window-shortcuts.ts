@@ -1,21 +1,20 @@
 import { BrowserWindow } from 'electron';
-import { is } from 'electron-util';
 import { WindowShortcutManager } from '../shortcuts/WindowShortcutManager';
 
 export function configureWindowShortcuts(mainWindow: BrowserWindow): void {
   const shortcutManager = new WindowShortcutManager(mainWindow);
 
-  shortcutManager.register('openInPageSearch', 'CommandOrControl+F');
+  shortcutManager.register('CommandOrControl+F', 'openInPageSearch');
 
-  shortcutManager.register('addTab', 'CommandOrControl+T');
-  shortcutManager.register('closeCurrentTab', 'CommandOrControl+W');
+  shortcutManager.register('CommandOrControl+T', 'addTab');
+  shortcutManager.register('CommandOrControl+W', 'closeCurrentTab');
 
   for (let i = 0; i < 10; i++) {
-    const shortcut = `${is.macos ? 'Command' : 'Alt'}+${i}`;
+    const shortcut = `CommandOrControl+${i}`;
     const data = {
       index: i === 0 ? 9 : i - 1,
     };
 
-    shortcutManager.register('showTab', shortcut, data);
+    shortcutManager.register(shortcut, 'showTab', data);
   }
 }

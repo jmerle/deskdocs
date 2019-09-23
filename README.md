@@ -12,10 +12,9 @@ DeskDocs is a feature-rich desktop application for [DevDocs.io](https://devdocs.
 - [In-page search](#in-page-search)
 - [Global shortcut](#global-shortcut)
 - [Auto restore](#auto-restore)
-- [Adjustable text size](#adjustable-text-size)
-- [Toggleable menu bar](#toggleable-menu-bar)
 - [Launch on boot](#launch-on-boot)
 - [`devdocs://` protocol](#devdocs-protocol)
+- Toggleable menu bar
 - Cross-platform
 
 ## Install
@@ -55,12 +54,6 @@ TBD
 ### Auto restore
 TBD
 
-### Adjustable text size
-TBD
-
-### Toggleable menu bar
-TBD
-
 ### Launch on boot
 TBD
 
@@ -84,4 +77,4 @@ $ yarn fix
 ```
 
 ### Releases
-Running `yarn release` starts an interactive UI to publish a new version. After the command finishes and a browser window opens to create a new draft, save it immediately to allow the Travis build to attach assets to it. After the Travis build is finished the draft can be released. `snapcraft` is required to be installed and configured so that a new Snap can be pushed to the Snap Store.
+Running `yarn release` starts an interactive UI to publish a new version. After the command finishes and a browser window opens to create a new draft, save it immediately to allow the Travis build to attach assets to it. After the Travis build is finished the draft can be released. To release to the Snap store, run `yarn publish-snap` on a machine with `snapcraft` installed and configured.

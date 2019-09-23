@@ -23,11 +23,13 @@ export class TabManager {
 
       if (tab !== undefined) {
         this.showTab(tab);
+        this.updateAutoRestoreConfig();
       }
     });
 
     this.tabsContainer.addEventListener('tabReorder', () => {
       this.sortTabsArray();
+      this.updateAutoRestoreConfig();
     });
 
     rendererConfig.onChange('dark', () => {
@@ -63,14 +65,18 @@ export class TabManager {
 
     this.showTab(tab);
     this.updateTabContainerVisibility();
+    this.updateAutoRestoreConfig();
   }
+
   public closeTab(tab: Tab): void {
     this.chromeTabs.removeTab(tab.tabEl);
     tab.webview.remove();
 
     this.tabs.splice(this.tabs.indexOf(tab), 1);
+
     this.updateTabIndexes();
     this.updateTabContainerVisibility();
+    this.updateAutoRestoreConfig();
 
     if (this.tabs.length === 0) {
       remote.app.quit();
@@ -143,6 +149,10 @@ export class TabManager {
 
   private updateTheme(): void {
     this.tabsContainer.classList.toggle('chrome-tabs-dark-theme', rendererConfig.get('dark'));
+  }
+
+  private updateAutoRestoreConfig(): void {
+    //
   }
 
   private generateId(): string {
