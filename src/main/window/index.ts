@@ -3,6 +3,7 @@ import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
 import { configureGlobalShortcut } from './global-shortcut';
+import { configureLaunchOnBoot } from './launch-on-boot';
 import { configureMenuVisibility } from './menu-visibility';
 import { ShortcutManager } from './ShortcutManager';
 import { configureSystemTheme } from './system-theme';
@@ -13,6 +14,7 @@ let mainWindow: BrowserWindow = null;
 function configureWindow(): void {
   const shortcutManager = new ShortcutManager(mainWindow);
 
+  configureLaunchOnBoot();
   configureWindowShortcuts(shortcutManager);
   configureGlobalShortcut(mainWindow, shortcutManager);
   configureMenuVisibility(mainWindow);

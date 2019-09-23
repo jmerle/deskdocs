@@ -25,6 +25,7 @@
     "publish-snap": "del dist && yarn package --linux && snapcraft push --release=stable dist/*.snap"
   },
   "dependencies": {
+    "auto-launch": "^5.0.5",
     "chrome-tabs": "^5.4.0",
     "electron-better-ipc": "^0.5.0",
     "electron-context-menu": "https://github.com/jmerle/electron-context-menu/tarball/0d42f32edbf078ef83330dd4c36e8180923692c8",
@@ -37,6 +38,7 @@
     "source-map-support": "^0.5.13"
   },
   "devDependencies": {
+    "@types/auto-launch": "^5.0.1",
     "@types/node": "^12.7.5",
     "del-cli": "^3.0.0",
     "electron": "^6.0.10",
@@ -44,7 +46,7 @@
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
     "husky": "^3.0.5",
-    "lint-staged": "^9.2.5",
+    "lint-staged": "^9.3.0",
     "node-sass": "^4.12.0",
     "np": "^5.1.0",
     "prettier": "^1.18.2",
