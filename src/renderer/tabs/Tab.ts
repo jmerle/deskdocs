@@ -6,7 +6,7 @@ import { initWebviewContextMenu } from '../context-menu';
 
 interface TabEvents {
   close: [];
-  pathname: [string];
+  pathnameUpdated: [];
   newTab: [string];
 }
 
@@ -55,7 +55,7 @@ export class Tab extends EventEmitter<TabEvents> {
     this.webview.addEventListener('ipc-message', data => {
       if (data.channel === 'pathname') {
         this.pathname = data.args[0].pathname;
-        this.emit('pathname', this.pathname);
+        this.emit('pathnameUpdated');
       }
 
       if (!this.webview.classList.contains('hidden')) {

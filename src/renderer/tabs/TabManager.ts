@@ -69,7 +69,7 @@ export class TabManager {
       this.closeTab(tab);
     });
 
-    tab.on('pathname', () => {
+    tab.on('pathnameUpdated', () => {
       this.updateAutoRestoreConfig();
     });
 
