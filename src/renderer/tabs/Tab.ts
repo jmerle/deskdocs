@@ -1,4 +1,4 @@
-import { WebviewTag } from 'electron';
+import { shell, WebviewTag } from 'electron';
 import * as EventEmitter from 'eventemitter3';
 import { callMain } from '../../common/ipc';
 import { initWebviewContextMenu } from '../context-menu';
@@ -38,6 +38,12 @@ export class Tab extends EventEmitter<TabEvents> {
         initWebviewContextMenu(this.webview);
         needsContextMenu = false;
       }
+
+      this.webview.getWebContents().on('new-window', (event, url) => {
+        if (url !== 'about:blank') {
+          shell.openExternal(url);
+        }
+      });
     });
 
     this.webview.addEventListener('ipc-message', data => {
