@@ -8,9 +8,14 @@ interface TabEvents {
   close: [];
   pathnameUpdated: [];
   newTab: [string];
+  titleUpdated: [];
+  faviconUpdated: [];
 }
 
 export class Tab extends EventEmitter<TabEvents> {
+  public title = 'Index';
+  public favicon = '';
+
   constructor(
     public id: string,
     public index: number,
@@ -20,10 +25,20 @@ export class Tab extends EventEmitter<TabEvents> {
   ) {
     super();
 
-    this.initEvents();
+    this.initTabElement();
+    this.initWebview();
   }
 
-  private initEvents(): void {
+  public setVisibility(visible: boolean): void {
+    const classes = this.webview.classList;
+    classes.toggle('hidden', !visible);
+  }
+
+  public send(channel: string, data?: any): void {
+    this.webview.send(channel, data);
+  }
+
+  private initTabElement(): void {
     this.tabEl.addEventListener('mouseup', event => {
       if (event.button === 1) {
         this.emit('close');
@@ -33,7 +48,9 @@ export class Tab extends EventEmitter<TabEvents> {
     this.tabEl.querySelector('.chrome-tab-close').addEventListener('click', event => {
       this.emit('close');
     });
+  }
 
+  private initWebview(): void {
     let needsContextMenu = true;
     this.webview.addEventListener('dom-ready', () => {
       if (needsContextMenu) {
@@ -62,14 +79,20 @@ export class Tab extends EventEmitter<TabEvents> {
         callMain(data.channel, ...data.args);
       }
     });
-  }
 
-  public setVisibility(visible: boolean): void {
-    const classes = this.webview.classList;
-    classes.toggle('hidden', !visible);
-  }
+    this.webview.addEventListener('page-title-updated', event => {
+      this.title = event.title.replace(' — DevDocs', '');
 
-  public send(channel: string, data?: any): void {
-    this.webview.send(channel, data);
+      if (this.title === 'DevDocs API Documentation') {
+        this.title = 'Index';
+      }
+
+      this.emit('titleUpdated');
+    });
+
+    this.webview.addEventListener('page-favicon-updated', event => {
+      this.favicon = event.favicons[0];
+      this.emit('faviconUpdated');
+    });
   }
 }

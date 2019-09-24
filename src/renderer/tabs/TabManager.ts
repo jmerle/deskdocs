@@ -77,6 +77,14 @@ export class TabManager {
       this.addTab(newPathname);
     });
 
+    tab.on('titleUpdated', () => {
+      this.updateTab(tab);
+    });
+
+    tab.on('faviconUpdated', () => {
+      this.updateTab(tab);
+    });
+
     this.showTab(tab);
     this.updateTabContainerVisibility();
     this.updateAutoRestoreConfig();
@@ -136,6 +144,13 @@ export class TabManager {
   private updateTabIndexes(): void {
     this.tabs.forEach((t, i) => {
       t.index = i;
+    });
+  }
+
+  private updateTab(tab: Tab): void {
+    this.chromeTabs.updateTab(tab.tabEl, {
+      title: tab.title,
+      favicon: tab.favicon,
     });
   }
 
