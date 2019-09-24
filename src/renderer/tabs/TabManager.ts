@@ -73,6 +73,10 @@ export class TabManager {
       this.updateAutoRestoreConfig();
     });
 
+    tab.on('newTab', newPathname => {
+      this.addTab(newPathname);
+    });
+
     this.showTab(tab);
     this.updateTabContainerVisibility();
     this.updateAutoRestoreConfig();

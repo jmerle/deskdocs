@@ -1,11 +1,13 @@
 import { shell, WebviewTag } from 'electron';
 import * as EventEmitter from 'eventemitter3';
+import { BASE_URL } from '../../common/constants';
 import { callMain } from '../../common/ipc';
 import { initWebviewContextMenu } from '../context-menu';
 
 interface TabEvents {
   close: [];
   pathname: [string];
+  newTab: [string];
 }
 
 export class Tab extends EventEmitter<TabEvents> {
@@ -39,9 +41,13 @@ export class Tab extends EventEmitter<TabEvents> {
         needsContextMenu = false;
       }
 
-      this.webview.getWebContents().on('new-window', (event, url) => {
+      this.webview.getWebContents().on('new-window', (event, url, frameName, disposition) => {
         if (url !== 'about:blank') {
-          shell.openExternal(url);
+          if (disposition === 'background-tab' && url.startsWith(BASE_URL)) {
+            this.emit('newTab', url.replace(BASE_URL, ''));
+          } else {
+            shell.openExternal(url);
+          }
         }
       });
     });
