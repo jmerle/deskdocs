@@ -2,17 +2,35 @@ import { systemPreferences } from 'electron';
 import { is } from 'electron-util';
 import { mainConfig } from '../config';
 
-export function configureSystemTheme(): void {
-  if (is.macos) {
-    const updateBySystemTheme = () => {
-      if (mainConfig.get('useSystemTheme')) {
-        mainConfig.set('dark', systemPreferences.isDarkMode());
-      }
-    };
+function updateSystemTheme(): void {
+  if (mainConfig.get('useSystemTheme')) {
+    let darkMode = false;
 
-    updateBySystemTheme();
-    systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => updateBySystemTheme());
-    mainConfig.onChange('dark', () => updateBySystemTheme());
-    mainConfig.onChange('useSystemTheme', () => updateBySystemTheme());
+    if (is.macos) {
+      darkMode = systemPreferences.isDarkMode();
+    }
+
+    if (is.windows) {
+      darkMode = systemPreferences.isInvertedColorScheme();
+    }
+
+    mainConfig.set('dark', darkMode);
+  }
+}
+
+export function configureSystemTheme(): void {
+  if (is.macos || is.windows) {
+    updateSystemTheme();
+
+    if (is.macos) {
+      systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', () => updateSystemTheme());
+    }
+
+    if (is.windows) {
+      systemPreferences.on('inverted-color-scheme-changed', () => updateSystemTheme());
+    }
+
+    mainConfig.onChange('dark', () => updateSystemTheme());
+    mainConfig.onChange('useSystemTheme', () => updateSystemTheme());
   }
 }

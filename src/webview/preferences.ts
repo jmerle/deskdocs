@@ -52,7 +52,7 @@ export function buildPreferences(): Preference[] {
     },
   ];
 
-  if (is.macos) {
+  if (is.macos || is.windows) {
     preferences.push({
       id: 'useSystemTheme',
       type: PreferenceType.Checkbox,
@@ -60,7 +60,9 @@ export function buildPreferences(): Preference[] {
       description:
         'With this checked, the "Enable dark theme" option will stop working and the system theme will be used instead.',
     });
-  } else {
+  }
+
+  if (!is.macos) {
     preferences.push({
       id: 'hideMenuBar',
       type: PreferenceType.Checkbox,
