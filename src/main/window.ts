@@ -2,8 +2,10 @@ import { app, BrowserWindow } from 'electron';
 import { is } from 'electron-util';
 import * as path from 'path';
 import * as url from 'url';
+import { mainConfig } from './config';
 import { configureMenuVisibility } from './configure/menu-visibility';
 import { configureWindowShortcuts } from './configure/window-shortcuts';
+import { configureWindowState } from './configure/window-state';
 import { isQuitting } from './utils/state';
 
 let mainWindow: BrowserWindow = null;
@@ -32,8 +34,14 @@ export async function createOrRestoreWindow(): Promise<void> {
     return;
   }
 
+  const windowState = mainConfig.get('windowState');
+
   mainWindow = new BrowserWindow({
     icon: path.join(__static, 'icon.png'),
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -57,10 +65,15 @@ export async function createOrRestoreWindow(): Promise<void> {
     mainWindow = null;
   });
 
+  configureWindowState(mainWindow);
   configureWindowShortcuts(mainWindow);
   configureMenuVisibility(mainWindow);
 
-  mainWindow.maximize();
+  if (windowState.maximized) {
+    mainWindow.maximize();
+  } else {
+    mainWindow.show();
+  }
 
   if (is.development) {
     await mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);

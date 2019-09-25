@@ -1,6 +1,14 @@
 import { is } from 'electron-util';
 
 export const defaultConfig: any = {
+  windowState: {
+    x: 0,
+    y: 0,
+    width: 1280,
+    height: 720,
+    maximized: true,
+  },
+
   dark: false,
   useSystemTheme: is.macos,
 
