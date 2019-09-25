@@ -48,6 +48,10 @@ answerMain('openInPageSearch', () => {
   manager.getCurrentTab().send('openInPageSearch');
 });
 
+answerMain('openPreferences', () => {
+  manager.getCurrentTab().send('openPreferences');
+});
+
 const autoRestoreEnabled = rendererConfig.get('autoRestore');
 const autoRestorePathnames = rendererConfig.get('autoRestorePathnames');
 const autoRestoreCurrentTab = rendererConfig.get('autoRestoreCurrentTab');

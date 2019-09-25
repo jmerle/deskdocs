@@ -1,6 +1,7 @@
-import { app, Menu, MenuItemConstructorOptions, shell } from 'electron';
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions, shell } from 'electron';
 import { appMenu, debugInfo, is, openNewGitHubIssue, openUrlMenuItem } from 'electron-util';
 import { REPO_NAME, REPO_OWNER } from '../common/constants';
+import { callRenderer } from '../common/ipc';
 import { mainConfig } from './config';
 
 type MenuTemplate = Parameters<typeof Menu.buildFromTemplate>[0];
@@ -43,7 +44,7 @@ const debugSubmenu: MenuItemConstructorOptions = {
       },
     },
     {
-      label: 'Open App Data',
+      label: 'Open app data',
       click: () => {
         shell.openItem(app.getPath('userData'));
       },
@@ -59,7 +60,7 @@ const debugSubmenu: MenuItemConstructorOptions = {
       },
     },
     {
-      label: 'Delete App Data and quit',
+      label: 'Delete app data and quit',
       click: () => {
         shell.moveItemToTrash(app.getPath('userData'));
         app.quit();
@@ -73,7 +74,10 @@ const preferencesMenuItem: MenuItemConstructorOptions = {
   accelerator: 'CommandOrControl+,',
   registerAccelerator: false,
   click: async () => {
-    // TODO
+    const window = BrowserWindow.getAllWindows()[0];
+    if (window) {
+      callRenderer(window, 'openPreferences');
+    }
   },
 };
 

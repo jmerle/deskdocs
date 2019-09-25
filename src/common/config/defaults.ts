@@ -15,5 +15,5 @@ export const defaultConfig: any = {
   autoRestoreCurrentTab: -1,
 
   showSingleTab: false,
-  hideMenuBar: !is.macos,
+  hideMenuBar: false,
 };
