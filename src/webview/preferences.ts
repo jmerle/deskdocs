@@ -15,11 +15,6 @@ export interface Preference {
 export function buildPreferences(): Preference[] {
   const preferences: Preference[] = [
     {
-      id: 'launchOnBoot',
-      type: PreferenceType.Checkbox,
-      label: 'Launch on boot',
-    },
-    {
       id: 'launchToTray',
       type: PreferenceType.Checkbox,
       label: 'Launch to tray',
@@ -51,6 +46,14 @@ export function buildPreferences(): Preference[] {
         'With this checked, tabs that were open when DeskDocs was last closed will be re-opened when DeskDocs is started again.',
     },
   ];
+
+  if (!is.development) {
+    preferences.unshift({
+      id: 'launchOnBoot',
+      type: PreferenceType.Checkbox,
+      label: 'Launch on boot',
+    });
+  }
 
   if (is.macos || is.windows) {
     preferences.push({

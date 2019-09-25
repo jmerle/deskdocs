@@ -7,7 +7,11 @@ const autoLauncher = new AutoLaunch({
 });
 
 function updateLaunchOnBoot(): void {
-  const shouldLaunchOnBoot = mainConfig.get('launchOnBoot') && !is.development;
+  if (is.development) {
+    return;
+  }
+
+  const shouldLaunchOnBoot = mainConfig.get('launchOnBoot');
 
   autoLauncher
     .isEnabled()
