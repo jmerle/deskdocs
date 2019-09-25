@@ -10,9 +10,9 @@ export const defaultConfig: any = {
   },
 
   dark: false,
-  useSystemTheme: is.macos,
+  useSystemTheme: is.macos || is.windows,
 
-  globalShortcut: 'CommandOrControl+Shift+D',
+  globalShortcut: `${is.macos ? 'Command' : 'Control'}+Shift+D`,
   globalShortcutEnabled: true,
 
   launchOnBoot: false,
