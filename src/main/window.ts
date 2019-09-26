@@ -37,7 +37,7 @@ export async function createOrRestoreWindow(): Promise<void> {
   const windowState = mainConfig.get('windowState');
 
   mainWindow = new BrowserWindow({
-    icon: path.join(__static, 'icon.png'),
+    icon: path.join(__static, '64x64.png'),
     x: windowState.x,
     y: windowState.y,
     width: windowState.width,

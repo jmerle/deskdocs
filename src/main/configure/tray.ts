@@ -1,4 +1,5 @@
 import { app, Menu, Tray } from 'electron';
+import { is } from 'electron-util';
 import * as path from 'path';
 import { startQuitting } from '../utils/state';
 import { createOrRestoreWindow } from '../window';
@@ -6,7 +7,9 @@ import { createOrRestoreWindow } from '../window';
 let tray: Tray = null;
 
 export function configureTray(): void {
-  tray = new Tray(path.resolve(__static, 'icon.png'));
+  const trayIconSize = is.macos ? 16 : 64;
+
+  tray = new Tray(path.resolve(__static, `${trayIconSize}x${trayIconSize}.png`));
 
   const contextMenu = Menu.buildFromTemplate([
     {
