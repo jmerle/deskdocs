@@ -13,8 +13,7 @@ DeskDocs is a feature-rich desktop application for [DevDocs.io](https://devdocs.
 - [Global shortcut](#global-shortcut)
 - [Auto restore](#auto-restore)
 - [Launch on boot](#launch-on-boot)
-- [`devdocs://` protocol](#devdocs-protocol)
-- Toggleable menu bar
+- [Toggleable menu bar](#toggleable-menu-bar)
 - Cross-platform
 
 ## Install
@@ -39,6 +38,8 @@ Also available as a [snap](https://snapcraft.io/deskdocs).
 
 ## Features
 
+Most features are configurable in the preferences, which can be opened using <kbd>Ctrl+,</kbd> on Linux and Windows and <kbd>⌘+,</kbd> on macOS.
+
 ### Dark mode
 TBD
 
@@ -57,7 +58,7 @@ TBD
 ### Launch on boot
 TBD
 
-### `devdocs://` protocol
+### Toggleable menu bar
 TBD
 
 ## Development

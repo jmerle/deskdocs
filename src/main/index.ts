@@ -5,7 +5,6 @@ import { mainConfig } from './config';
 import { configureContentSecurityPolicy } from './configure/content-security-policy';
 import { configureGlobalShortcut } from './configure/global-shortcut';
 import { configureLaunchOnBoot } from './configure/launch-on-boot';
-import { configureSystemTheme } from './configure/system-theme';
 import { configureTray } from './configure/tray';
 import { menu } from './menu';
 import { startQuitting } from './utils/state';
@@ -63,7 +62,6 @@ app.on('before-quit', () => {
   configureContentSecurityPolicy();
   configureGlobalShortcut();
   configureLaunchOnBoot();
-  configureSystemTheme();
 
   if (!mainConfig.get('launchToTray')) {
     await createOrRestoreWindow();
